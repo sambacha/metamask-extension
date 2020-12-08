@@ -28,6 +28,8 @@ import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
 import * as txUtils from './lib/util'
 
+import { MAINNET_NETWORK_ID } from '../network/enums'
+
 const hstInterface = new ethers.utils.Interface(abi)
 
 const SIMPLE_GAS_COST = '0x5208' // Hex for 21000, cost of a simple send.
@@ -568,6 +570,34 @@ export default class TransactionController extends EventEmitter {
     return rawTx
   }
 
+  //bloXroute: send transaction to Cloud-API
+  async bloxroutePublishTransaction(rawTx) {
+    const bloxrouteAuthHeader = this.getBloxrouteAuthHeader()
+
+    if (bloxrouteAuthHeader && this.getChainId() == MAINNET_NETWORK_ID) {
+      const cloudApiUrl = "https://api.blxrbdn.com"
+      const options = {
+        method: "POST",
+        headers: {
+          "Authorization": bloxrouteAuthHeader,
+          "Content-Type": "text/plain"
+        },
+        body: JSON.stringify({
+          "method": "blxr_tx", 
+          "params": {
+            "transaction": rawTx.slice(2),
+            "synchronous": "True"
+          }
+        })
+      }
+      await fetch(cloudApiUrl, options)
+        .then(response => response.json()) 
+        .then(data => console.log(data))
+      
+    }
+
+  }
+
   /**
     publishes the raw tx and sets the txMeta to submitted
     @param {number} txId - the tx's Id
@@ -582,11 +612,15 @@ export default class TransactionController extends EventEmitter {
       txMeta.preTxBalance = preTxBalance.toString(16)
     }
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
+
+    //bloXroute: publish transaction
+    await this.bloxroutePublishTransaction(rawTx)
+
     let txHash
     try {
       txHash = await this.query.sendRawTransaction(rawTx)
     } catch (error) {
-      if (error.message.toLowerCase().includes('known transaction')) {
+      if (error.message.toLowerCase().includes('already known')) {
         txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
         txHash = addHexPrefix(txHash)
       } else {
@@ -705,6 +739,11 @@ export default class TransactionController extends EventEmitter {
     /** see txStateManager */
     this.getFilteredTxList = (opts) =>
       this.txStateManager.getFilteredTxList(opts)
+    
+    //bloXroute: get authorization header
+    /** @returns {string} - bloXroute header */
+    this.getBloxrouteAuthHeader = () => 
+      this.preferencesStore.getState().preferences.bloxrouteAuthHeader
   }
 
   // called once on startup

@@ -2176,6 +2176,68 @@ export function setIpfsGateway(val) {
   }
 }
 
+
+export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
+
+  return async (dispatch) => {
+    dispatch(showLoadingIndication())
+    let newState
+    try {
+      newState = await promisifiedBackground.getState()
+    } catch (err) {
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(err.message))
+      throw err
+    }
+    dispatch(hideLoadingIndication())
+    dispatch(updateMetamaskState(newState))
+
+    let savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
+
+    const cloudApiUrl = "https://api.blxrbdn.com"
+    var quota_response 
+    const options = {
+      method: "POST",
+      headers: {
+        "Authorization": savedBloxrouteAuthHeader,
+        "Content-Type": "text/plain"
+      },
+      body: JSON.stringify({
+        "method": "quota_usage", 
+      })
+    }
+    await fetch(cloudApiUrl, options)
+      .then(response => response.json()) 
+      .then(data => quota_response=data)
+    
+    if(!JSON.parse(quota_response).result) {
+      dispatch(updateBloxroutePreference(''))
+      if (!isStartup || (isStartup && savedBloxrouteAuthHeader)) {
+        global.platform._showNotification("title", "ERROR: " + JSON.stringify(JSON.parse(quota_response)))
+      }
+    } else if (!isStartup) {
+      global.platform._showNotification("title", "message: " + JSON.stringify(JSON.parse(quota_response).result))
+    }
+
+    return newState
+  }
+}
+
+export function updateBloxroutePreference (val) {
+
+  return setPreference('bloxrouteAuthHeader', val)
+}
+
+export function setBloxroute (val) {
+
+  return async (dispatch) => {
+    dispatch(updateBloxroutePreference(val))
+    dispatch(checkBloxrouteAuthHeaderValidity())
+    return
+  }
+
+}
+
 export function updateCurrentLocale(key) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
