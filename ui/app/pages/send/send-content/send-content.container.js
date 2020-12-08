@@ -2,11 +2,12 @@ import { connect } from 'react-redux'
 import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
-  getAddressBookEntry,
+  getAddressBookEntry, getSendPrivateTx,
 } from '../../../selectors'
 
 import * as actions from '../../../store/actions'
 import SendContent from './send-content.component'
+import { updateSendPrivateTx } from '../../../store/actions'
 
 function mapStateToProps(state) {
   const ownedAccounts = accountsWithSendEtherInfoSelector(state)
@@ -19,6 +20,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
+    privateTx: getSendPrivateTx(state),
   }
 }
 
@@ -31,6 +33,8 @@ function mapDispatchToProps(dispatch) {
           recipient,
         }),
       ),
+    updateSendPrivateTx: (privateTx) =>
+      dispatch(updateSendPrivateTx(privateTx)),
   }
 }
 
@@ -41,6 +45,7 @@ function mergeProps(stateProps, dispatchProps, ownProps) {
     ...restStateProps,
     showAddToAddressBookModal: () =>
       dispatchProps.showAddToAddressBookModal(to),
+    updateSendPrivateTx: dispatchProps.updateSendPrivateTx,
   }
 }
 

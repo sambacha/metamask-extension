@@ -739,6 +739,13 @@ export function updateSendAmount(amount) {
   }
 }
 
+export function updateSendPrivateTx(privateTx) {
+  return {
+    type: actionConstants.UPDATE_SEND_PRIVATE_TX,
+    value: privateTx,
+  }
+}
+
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,

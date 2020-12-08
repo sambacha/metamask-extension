@@ -30,6 +30,7 @@ export default function reduceMetamask(state = {}, action) {
       toNickname: '',
       ensResolution: null,
       ensResolutionError: '',
+      privateTx: false,
     },
     useBlockie: false,
     featureFlags: {},
@@ -178,6 +179,14 @@ export default function reduceMetamask(state = {}, action) {
         send: {
           ...metamaskState.send,
           amount: action.value,
+        },
+      }
+    case actionConstants.UPDATE_SEND_PRIVATE_TX:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          privateTx: action.value,
         },
       }
 

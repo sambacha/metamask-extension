@@ -58,6 +58,10 @@ export function getSendAmount(state) {
   return state.metamask.send.amount
 }
 
+export function getSendPrivateTx(state) {
+  return state.metamask.send.privateTx
+}
+
 export function getSendHexData(state) {
   return state.metamask.send.data
 }

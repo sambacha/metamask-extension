@@ -6,6 +6,8 @@ import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
+import CheckBox from '../../../components/ui/check-box'
+import { Checkbox } from '@material-ui/core'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -19,12 +21,19 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
+    privateTx: PropTypes.bool,
+    updateSendPrivateTx: PropTypes.func,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
+  togglePrivateTx = (event) => {
+    event.preventDefault()
+    this.props.updateSendPrivateTx(!this.props.privateTx)
+  }
+
   render() {
-    const { warning } = this.props
+    const { warning, privateTx } = this.props
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -36,6 +45,15 @@ export default class SendContent extends Component {
           {this.props.showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
           )}
+          <Checkbox
+            id="sendContent_privateTransaction"
+            checked={privateTx}
+            disabled={false}
+            onClick={this.togglePrivateTx}
+          />
+          <label htmlFor="sendContent_privateTransaction">
+            Private Transaction
+          </label>
         </div>
       </PageContainerContent>
     )
