@@ -30,7 +30,7 @@ export default function TransactionListItem({
 
   const {
     initialTransaction: { id },
-    primaryTransaction: { err, status },
+    primaryTransaction: { err, status, privateTx },
   } = transactionGroup
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(
     transactionGroup,
@@ -144,6 +144,16 @@ export default function TransactionListItem({
               date={date}
               status={displayedStatusKey}
             />
+            <Tooltip
+              position="top"
+              title="Private"
+              wrapperClassName={classnames(
+                'transaction-status',
+                'transaction-status--dropped',
+              )}
+            >
+              {privateTx ? 'Private' : ''}
+            </Tooltip>
             <span
               className={
                 subtitleContainsOrigin

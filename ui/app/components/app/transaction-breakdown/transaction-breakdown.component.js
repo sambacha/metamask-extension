@@ -23,6 +23,7 @@ export default class TransactionBreakdown extends PureComponent {
     gasPrice: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     gasUsed: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
     totalInHex: PropTypes.oneOfType([PropTypes.string, PropTypes.number]),
+    privateTx: PropTypes.bool,
   }
 
   static defaultProps = {
@@ -42,6 +43,7 @@ export default class TransactionBreakdown extends PureComponent {
       totalInHex,
       gasUsed,
       isTokenApprove,
+      privateTx,
     } = this.props
     return (
       <div className={classnames('transaction-breakdown', className)}>
@@ -60,6 +62,9 @@ export default class TransactionBreakdown extends PureComponent {
           <span className="transaction-breakdown__value">
             {primaryCurrency}
           </span>
+        </TransactionBreakdownRow>
+        <TransactionBreakdownRow title="Private Transaction">
+          {typeof privateTx === 'undefined' ? 'false' : 'true'}
         </TransactionBreakdownRow>
         <TransactionBreakdownRow
           title={`${t('gasLimit')} (${t('units')})`}
