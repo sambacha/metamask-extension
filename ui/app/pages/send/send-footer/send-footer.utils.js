@@ -11,6 +11,7 @@ export function constructTxParams({
   from,
   gas,
   gasPrice,
+  privateTx,
 }) {
   const txParams = {
     data,
@@ -18,6 +19,7 @@ export function constructTxParams({
     value: '0',
     gas,
     gasPrice,
+    privateTx,
   }
 
   if (!sendToken) {

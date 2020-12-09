@@ -22,6 +22,7 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction'
+import { Checkbox } from '@material-ui/core'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -62,6 +63,7 @@ export default class ConfirmTransactionBase extends Component {
     toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
+    privateTx: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
     updateGasAndCalculate: PropTypes.func,
@@ -261,6 +263,7 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isMainnet,
+      privateTx,
     } = this.props
 
     if (hideDetails) {
@@ -355,6 +358,16 @@ export default class ConfirmTransactionBase extends Component {
               </div>
             </div>
           ) : null}
+          <div>
+            <Checkbox
+              id="confirmTx_privateTransaction"
+              checked={privateTx}
+              disabled
+            />
+            <label htmlFor="confirmTx_privateTransaction">
+              Private Transaction
+            </label>
+          </div>
         </div>
       )
     )

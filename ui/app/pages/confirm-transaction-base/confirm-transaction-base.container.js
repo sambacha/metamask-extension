@@ -84,6 +84,7 @@ const mapStateToProps = (state, ownProps) => {
     lastGasPrice,
     id: transactionId,
     transactionCategory,
+    privateTx,
   } = txData
   const transaction =
     Object.values(unapprovedTxs).find(
@@ -170,6 +171,7 @@ const mapStateToProps = (state, ownProps) => {
     conversionRate,
     transactionStatus,
     nonce,
+    privateTx,
     assetImage,
     unapprovedTxs,
     unapprovedTxCount,

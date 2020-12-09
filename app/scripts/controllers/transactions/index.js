@@ -236,6 +236,7 @@ export default class TransactionController extends EventEmitter {
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPES.STANDARD,
+      privateTx: txParams.privateTx,
     })
 
     if (origin === 'metamask') {
