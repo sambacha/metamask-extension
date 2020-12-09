@@ -111,6 +111,7 @@ function mapDispatchToProps(dispatch) {
         sendToken,
         to,
         unapprovedTxs,
+        privateTx,
       })
 
       return dispatch(updateTransaction(editingTx))

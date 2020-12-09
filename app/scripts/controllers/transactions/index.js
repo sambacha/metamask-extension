@@ -457,6 +457,7 @@ export default class TransactionController extends EventEmitter {
   @param {Object} txMeta - the updated txMeta
   */
   async updateTransaction(txMeta) {
+    txMeta.privateTx = txMeta.txParams.privateTx
     this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
   }
 

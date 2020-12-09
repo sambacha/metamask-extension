@@ -40,6 +40,7 @@ export function constructUpdatedTx({
   sendToken,
   to,
   unapprovedTxs,
+  privateTx,
 }) {
   const unapprovedTx = unapprovedTxs[editingTransactionId]
   const txParamsData = unapprovedTx.txParams.data
@@ -48,9 +49,9 @@ export function constructUpdatedTx({
 
   const editingTx = {
     ...unapprovedTx,
-    txParams: Object.assign(
-      unapprovedTx.txParams,
-      addHexPrefixToObjectValues({
+    txParams: Object.assign(unapprovedTx.txParams, {
+      privateTx,
+      ...addHexPrefixToObjectValues({
         data: txParamsData,
         to,
         from,
@@ -58,7 +59,7 @@ export function constructUpdatedTx({
         gasPrice,
         value: amount,
       }),
-    ),
+    }),
   }
 
   if (sendToken) {
