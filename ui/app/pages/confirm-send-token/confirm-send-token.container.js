@@ -22,6 +22,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     editTransaction: ({ txData, tokenData, tokenProps }) => {
+      // TODO: need to add something here?
       const {
         id,
         txParams: { from, to: tokenAddress, gas: gasLimit, gasPrice } = {},

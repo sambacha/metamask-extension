@@ -100,6 +100,7 @@ function mapDispatchToProps(dispatch) {
       unapprovedTxs,
       privateTx,
     }) => {
+      // TODO: figure this part with privateTx
       const editingTx = constructUpdatedTx({
         amount,
         data,

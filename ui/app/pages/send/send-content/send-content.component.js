@@ -6,7 +6,6 @@ import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
-import CheckBox from '../../../components/ui/check-box'
 import { Checkbox } from '@material-ui/core'
 
 export default class SendContent extends Component {

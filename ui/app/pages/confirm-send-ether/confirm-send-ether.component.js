@@ -12,11 +12,12 @@ export default class ConfirmSendEther extends Component {
     editTransaction: PropTypes.func,
     history: PropTypes.object,
     txParams: PropTypes.object,
+    privateTx: PropTypes.bool,
   }
 
   handleEdit({ txData }) {
-    const { editTransaction, history } = this.props
-    editTransaction(txData)
+    const { editTransaction, history, privateTx } = this.props
+    editTransaction(txData, privateTx)
     history.push(SEND_ROUTE)
   }
 
