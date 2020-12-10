@@ -58,6 +58,7 @@ export default class PreferencesController {
         autoLockTimeLimit: undefined,
         showFiatInTestnets: false,
         useNativeCurrencyAsPrimaryCurrency: true,
+        bloxrouteAuthHeader: undefined,
       },
       completedOnboarding: false,
       // ENS decentralized website resolution

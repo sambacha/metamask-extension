@@ -11,6 +11,7 @@ import {
   turnThreeBoxSyncingOnAndInitialize,
   setUseNonceField,
   setIpfsGateway,
+  setBloxroute,
 } from '../../../store/actions'
 import { getPreferences } from '../../../selectors'
 import AdvancedTab from './advanced-tab.component'
@@ -27,7 +28,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
   } = metamask
-  const { showFiatInTestnets, autoLockTimeLimit } = getPreferences(state)
+  const { showFiatInTestnets, autoLockTimeLimit, bloxrouteAuthHeader } = getPreferences(state)
 
   return {
     warning,
@@ -39,6 +40,7 @@ export const mapStateToProps = (state) => {
     threeBoxDisabled,
     useNonceField,
     ipfsGateway,
+    bloxrouteAuthHeader,
   }
 }
 
@@ -67,6 +69,10 @@ export const mapDispatchToProps = (dispatch) => {
     },
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value))
+    },
+    //bloXroute: set authorization header
+    setBloxroute: (value) => {
+      return dispatch(setBloxroute(value))
     },
   }
 }
