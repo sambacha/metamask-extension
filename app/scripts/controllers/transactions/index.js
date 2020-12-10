@@ -600,8 +600,13 @@ export default class TransactionController extends EventEmitter {
       }
       options.body = JSON.stringify(options.body)
 
-      const bxResponse = await fetch(CLOUD_API_URL, options).then((response) => response.json())
-
+      try {
+        const bxResponse = await fetch(CLOUD_API_URL, options).then((response) =>
+          response.json(),
+        )
+      } catch (err) {
+        throw new Error(`Could not reach bloxroute: ${err.message}`)
+      }
       if (bxResponse.error) {
         throw new Error(
           `bloxroute: ${bxResponse.error.message} (code ${bxResponse.error.code})`,
