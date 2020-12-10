@@ -62,6 +62,10 @@ export function getSendPrivateTx(state) {
   return state.metamask.send.privateTx
 }
 
+export function getBloxrouteAuthorized(state) {
+  return state.metamask.preferences.bloxrouteAuthHeader
+}
+
 export function getSendHexData(state) {
   return state.metamask.send.data
 }

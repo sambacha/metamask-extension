@@ -25,6 +25,7 @@ import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-accoun
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
 import * as actionConstants from './actionConstants'
+import { CLOUD_API_URL } from '../../../shared/constants/bloxroute'
 
 let background = null
 let promisifiedBackground = null
@@ -2201,8 +2202,7 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
 
     let savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
 
-    const cloudApiUrl = "https://api.blxrbdn.com"
-    var quota_response 
+    var quota_response
     const options = {
       method: "POST",
       headers: {
@@ -2210,13 +2210,13 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
         "Content-Type": "text/plain"
       },
       body: JSON.stringify({
-        "method": "quota_usage", 
+        "method": "quota_usage",
       })
     }
-    await fetch(cloudApiUrl, options)
-      .then(response => response.json()) 
+    await fetch(CLOUD_API_URL, options)
+      .then(response => response.json())
       .then(data => quota_response=data)
-    
+
     if(!JSON.parse(quota_response).result) {
       dispatch(updateBloxroutePreference(''))
       if (!isStartup || (isStartup && savedBloxrouteAuthHeader)) {

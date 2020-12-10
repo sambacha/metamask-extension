@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
-  getAddressBookEntry, getSendPrivateTx,
+  getAddressBookEntry, getSendPrivateTx, getBloxrouteAuthorized,
 } from '../../../selectors'
 
 import * as actions from '../../../store/actions'
@@ -20,6 +20,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
+    showPrivateTx: getBloxrouteAuthorized(state),
     privateTx: getSendPrivateTx(state),
   }
 }

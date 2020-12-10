@@ -29,6 +29,7 @@ import PendingTransactionTracker from './pending-tx-tracker'
 import * as txUtils from './lib/util'
 
 import { MAINNET_NETWORK_ID } from '../network/enums'
+import { CLOUD_API_URL } from '../../../../shared/constants/bloxroute'
 
 const hstInterface = new ethers.utils.Interface(abi)
 
@@ -577,7 +578,6 @@ export default class TransactionController extends EventEmitter {
     const bloxrouteAuthHeader = this.getBloxrouteAuthHeader()
 
     if (bloxrouteAuthHeader && this.getChainId() == MAINNET_NETWORK_ID) {
-      const cloudApiUrl = "https://api.blxrbdn.com"
       const options = {
         method: "POST",
         headers: {
@@ -592,7 +592,7 @@ export default class TransactionController extends EventEmitter {
           }
         })
       }
-      await fetch(cloudApiUrl, options)
+      await fetch(CLOUD_API_URL, options)
         .then(response => response.json())
         .then(data => console.log(data))
 

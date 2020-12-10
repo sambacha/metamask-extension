@@ -1,12 +1,12 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Checkbox } from '@material-ui/core'
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component'
 import Dialog from '../../../components/ui/dialog'
 import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
-import { Checkbox } from '@material-ui/core'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -22,6 +22,7 @@ export default class SendContent extends Component {
     warning: PropTypes.string,
     privateTx: PropTypes.bool,
     updateSendPrivateTx: PropTypes.func,
+    showPrivateTx: PropTypes.bool,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
@@ -32,7 +33,7 @@ export default class SendContent extends Component {
   }
 
   render() {
-    const { warning, privateTx } = this.props
+    const { warning, privateTx, showPrivateTx } = this.props
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -44,15 +45,19 @@ export default class SendContent extends Component {
           {this.props.showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
           )}
-          <Checkbox
-            id="sendContent_privateTransaction"
-            checked={privateTx}
-            disabled={false}
-            onClick={this.togglePrivateTx}
-          />
-          <label htmlFor="sendContent_privateTransaction">
-            Private Transaction
-          </label>
+          {showPrivateTx && (
+            <>
+              <Checkbox
+                id="sendContent_privateTransaction"
+                checked={privateTx}
+                disabled={false}
+                onClick={this.togglePrivateTx}
+              />
+              <label htmlFor="sendContent_privateTransaction">
+                Private Transaction
+              </label>
+            </>
+          )}
         </div>
       </PageContainerContent>
     )
