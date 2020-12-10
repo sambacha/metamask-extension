@@ -36,7 +36,7 @@ import {
   getMetaMaskAccounts,
   getUseNonceField,
   getPreferences,
-  transactionFeeSelector,
+  transactionFeeSelector, getBloxrouteAuthorized,
 } from '../../selectors'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
@@ -191,6 +191,7 @@ const mapStateToProps = (state, ownProps) => {
     nextNonce,
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
     isMainnet,
+    showPrivateTx: Boolean(getBloxrouteAuthorized(state)),
   }
 }
 

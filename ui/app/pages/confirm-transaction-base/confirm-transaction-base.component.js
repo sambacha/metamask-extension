@@ -1,6 +1,7 @@
 import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { Checkbox } from '@material-ui/core'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, {
@@ -22,7 +23,6 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction'
-import { Checkbox } from '@material-ui/core'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -64,6 +64,7 @@ export default class ConfirmTransactionBase extends Component {
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
     privateTx: PropTypes.bool,
+    showPrivateTx: PropTypes.bool,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
     updateGasAndCalculate: PropTypes.func,
@@ -264,6 +265,7 @@ export default class ConfirmTransactionBase extends Component {
       getNextNonce,
       isMainnet,
       privateTx,
+      showPrivateTx,
     } = this.props
 
     if (hideDetails) {
@@ -359,14 +361,18 @@ export default class ConfirmTransactionBase extends Component {
             </div>
           ) : null}
           <div>
-            <Checkbox
-              id="confirmTx_privateTransaction"
-              checked={typeof privateTx === 'undefined' ? false : privateTx}
-              disabled
-            />
-            <label htmlFor="confirmTx_privateTransaction">
-              Private Transaction
-            </label>
+            {showPrivateTx && (
+              <>
+                <Checkbox
+                  id="confirmTx_privateTransaction"
+                  checked={typeof privateTx === 'undefined' ? false : privateTx}
+                  disabled
+                />
+                <label htmlFor="confirmTx_privateTransaction">
+                  Private Transaction
+                </label>
+              </>
+            )}
           </div>
         </div>
       )
