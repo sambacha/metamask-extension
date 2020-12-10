@@ -144,16 +144,20 @@ export default function TransactionListItem({
               date={date}
               status={displayedStatusKey}
             />
-            <Tooltip
-              position="top"
-              title="Private"
-              wrapperClassName={classnames(
-                'transaction-status',
-                'transaction-status--dropped',
-              )}
-            >
-              {privateTx ? 'Private' : ''}
-            </Tooltip>
+            {privateTx && (
+              <>
+                <Tooltip
+                  position="top"
+                  title="Private"
+                  wrapperClassName={classnames(
+                    'transaction-status',
+                    'transaction-status--dropped',
+                  )}
+                >
+                  Private
+                </Tooltip>
+              </>
+            )}
             <span
               className={
                 subtitleContainsOrigin
