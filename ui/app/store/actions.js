@@ -2200,7 +2200,7 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
 
     const savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
 
-    let quota_response
+    let quotaResponse
     const options = {
       method: 'POST',
       headers: {
@@ -2213,20 +2213,20 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
     }
     await fetch(CLOUD_API_URL, options)
       .then((response) => response.json())
-      .then((data) => (quota_response = data))
+      .then((data) => (quotaResponse = data))
 
-    if (!JSON.parse(quota_response).result) {
+    if (!JSON.parse(quotaResponse).result) {
       dispatch(updateBloxroutePreference(''))
       if (!isStartup || (isStartup && savedBloxrouteAuthHeader)) {
         global.platform._showNotification(
           'title',
-          `ERROR: ${JSON.stringify(JSON.parse(quota_response))}`,
+          `ERROR: ${JSON.stringify(JSON.parse(quotaResponse))}`,
         )
       }
     } else if (!isStartup) {
       global.platform._showNotification(
         'title',
-        `message: ${JSON.stringify(JSON.parse(quota_response).result)}`,
+        `message: ${JSON.stringify(JSON.parse(quotaResponse).result)}`,
       )
     }
 

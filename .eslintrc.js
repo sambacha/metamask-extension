@@ -46,6 +46,7 @@ module.exports = {
   globals: {
     document: 'readonly',
     window: 'readonly',
+    fetch: false,
   },
 
   rules: {
