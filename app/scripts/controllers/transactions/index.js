@@ -23,13 +23,12 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction'
+import { MAINNET_NETWORK_ID } from '../network/enums'
+import { CLOUD_API_URL } from '../../../../shared/constants/bloxroute'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
 import * as txUtils from './lib/util'
-
-import { MAINNET_NETWORK_ID } from '../network/enums'
-import { CLOUD_API_URL } from '../../../../shared/constants/bloxroute'
 
 const hstInterface = new ethers.utils.Interface(abi)
 
@@ -581,24 +580,25 @@ export default class TransactionController extends EventEmitter {
       const options = {
         method: 'POST',
         headers: {
-          'Authorization': bloxrouteAuthHeader,
-          'Content-Type': 'application/json'
+          Authorization: bloxrouteAuthHeader,
+          'Content-Type': 'application/json',
         },
         body: {
           method: 'blxr_tx',
           params: {
             transaction: rawTx.slice(2),
-          }
-        }
+          },
+        },
       }
       if (privateTx) {
-        options.body.method = "blxr_private_tx"
+        options.body.method = 'blxr_private_tx'
       }
-      console.log(`Publish message to bloxroute: ${JSON.stringify(options)}`)
-      await fetch(CLOUD_API_URL, options)
-        .then(response => response.json())
-        .then(data => console.log(data))
+      options.body = JSON.stringify(options.body)
 
+      await fetch(CLOUD_API_URL, options)
+        .then((response) => response.json())
+        .then((data) => console.log(data))
+        .catch((err) => console.log(err))
     }
   }
 
@@ -633,6 +633,7 @@ export default class TransactionController extends EventEmitter {
           txHash = addHexPrefix(txHash)
         } else {
           throw error
+        }
       }
     }
     this.setTxHash(txId, txHash)
@@ -747,7 +748,7 @@ export default class TransactionController extends EventEmitter {
     this.getFilteredTxList = (opts) =>
       this.txStateManager.getFilteredTxList(opts)
 
-    //bloXroute: get authorization header
+    // bloXroute: get authorization header
     /** @returns {string} - bloXroute header */
     this.getBloxrouteAuthHeader = () =>
       this.preferencesStore.getState().preferences.bloxrouteAuthHeader

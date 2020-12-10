@@ -20,7 +20,7 @@ function mapStateToProps(state) {
     ),
     contact: getAddressBookEntry(state, to),
     to,
-    showPrivateTx: getBloxrouteAuthorized(state),
+    showPrivateTx: getBloxrouteAuthorized(state) !== undefined,
     privateTx: getSendPrivateTx(state),
   }
 }
