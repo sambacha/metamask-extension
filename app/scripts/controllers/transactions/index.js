@@ -573,10 +573,15 @@ export default class TransactionController extends EventEmitter {
   }
 
   // bloXroute: send transaction to Cloud-API
+  // This function doesn't really take into account matching network number with
+  // the bloXroute authorization header.
   async bloxroutePublishTransaction(rawTx, privateTx) {
     const bloxrouteAuthHeader = this.getBloxrouteAuthHeader()
 
-    if (bloxrouteAuthHeader && String(this.getChainId()) === MAINNET_NETWORK_ID) {
+    if (
+      bloxrouteAuthHeader &&
+      String(this.getChainId()) === MAINNET_NETWORK_ID
+    ) {
       const options = {
         method: 'POST',
         headers: {
