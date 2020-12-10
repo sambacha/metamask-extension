@@ -573,31 +573,33 @@ export default class TransactionController extends EventEmitter {
     return rawTx
   }
 
-  //bloXroute: send transaction to Cloud-API
-  async bloxroutePublishTransaction(rawTx) {
+  // bloXroute: send transaction to Cloud-API
+  async bloxroutePublishTransaction(rawTx, privateTx) {
     const bloxrouteAuthHeader = this.getBloxrouteAuthHeader()
 
-    if (bloxrouteAuthHeader && this.getChainId() == MAINNET_NETWORK_ID) {
+    if (bloxrouteAuthHeader && String(this.getChainId()) === MAINNET_NETWORK_ID) {
       const options = {
-        method: "POST",
+        method: 'POST',
         headers: {
-          "Authorization": bloxrouteAuthHeader,
-          "Content-Type": "text/plain"
+          'Authorization': bloxrouteAuthHeader,
+          'Content-Type': 'application/json'
         },
-        body: JSON.stringify({
-          "method": "blxr_tx",
-          "params": {
-            "transaction": rawTx.slice(2),
-            "synchronous": "True"
+        body: {
+          method: 'blxr_tx',
+          params: {
+            transaction: rawTx.slice(2),
           }
-        })
+        }
       }
+      if (privateTx) {
+        options.body.method = "blxr_private_tx"
+      }
+      console.log(`Publish message to bloxroute: ${JSON.stringify(options)}`)
       await fetch(CLOUD_API_URL, options)
         .then(response => response.json())
         .then(data => console.log(data))
 
     }
-
   }
 
   /**
@@ -615,14 +617,13 @@ export default class TransactionController extends EventEmitter {
     }
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
 
-    //bloXroute: publish transaction
-    await this.bloxroutePublishTransaction(rawTx)
+    // bloXroute: publish transaction
+    await this.bloxroutePublishTransaction(rawTx, txMeta.privateTx)
 
     let txHash
     if (txMeta.privateTx) {
       txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
       txHash = addHexPrefix(txHash)
-      console.log(`Sending private transaction ${txHash}`)
     } else {
       try {
         txHash = await this.query.sendRawTransaction(rawTx)
@@ -635,7 +636,6 @@ export default class TransactionController extends EventEmitter {
       }
     }
     this.setTxHash(txId, txHash)
-
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
