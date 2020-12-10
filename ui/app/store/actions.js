@@ -24,8 +24,8 @@ import {
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
-import * as actionConstants from './actionConstants'
 import { CLOUD_API_URL } from '../../../shared/constants/bloxroute'
+import * as actionConstants from './actionConstants'
 
 let background = null
 let promisifiedBackground = null
@@ -2184,9 +2184,7 @@ export function setIpfsGateway(val) {
   }
 }
 
-
 export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
-
   return async (dispatch) => {
     dispatch(showLoadingIndication())
     let newState
@@ -2200,49 +2198,51 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
     dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
 
-    let savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
+    const savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
 
-    var quota_response
+    let quota_response
     const options = {
-      method: "POST",
+      method: 'POST',
       headers: {
-        "Authorization": savedBloxrouteAuthHeader,
-        "Content-Type": "text/plain"
+        Authorization: savedBloxrouteAuthHeader,
+        'Content-Type': 'text/plain',
       },
       body: JSON.stringify({
-        "method": "quota_usage",
-      })
+        method: 'quota_usage',
+      }),
     }
     await fetch(CLOUD_API_URL, options)
-      .then(response => response.json())
-      .then(data => quota_response=data)
+      .then((response) => response.json())
+      .then((data) => (quota_response = data))
 
-    if(!JSON.parse(quota_response).result) {
+    if (!JSON.parse(quota_response).result) {
       dispatch(updateBloxroutePreference(''))
       if (!isStartup || (isStartup && savedBloxrouteAuthHeader)) {
-        global.platform._showNotification("title", "ERROR: " + JSON.stringify(JSON.parse(quota_response)))
+        global.platform._showNotification(
+          'title',
+          `ERROR: ${JSON.stringify(JSON.parse(quota_response))}`,
+        )
       }
     } else if (!isStartup) {
-      global.platform._showNotification("title", "message: " + JSON.stringify(JSON.parse(quota_response).result))
+      global.platform._showNotification(
+        'title',
+        `message: ${JSON.stringify(JSON.parse(quota_response).result)}`,
+      )
     }
 
     return newState
   }
 }
 
-export function updateBloxroutePreference (val) {
-
+export function updateBloxroutePreference(val) {
   return setPreference('bloxrouteAuthHeader', val)
 }
 
-export function setBloxroute (val) {
-
+export function setBloxroute(val) {
   return async (dispatch) => {
     dispatch(updateBloxroutePreference(val))
     dispatch(checkBloxrouteAuthHeaderValidity())
-    return
   }
-
 }
 
 export function updateCurrentLocale(key) {
