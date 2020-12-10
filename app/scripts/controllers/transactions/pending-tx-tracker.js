@@ -80,6 +80,10 @@ export default class PendingTransactionTracker extends EventEmitter {
       return
     }
     for (const txMeta of pending) {
+      // bloxroute: skip retrying private transactions, unnecessary
+      if (txMeta.privateTx) {
+        continue
+      }
       try {
         await this._resubmitTx(txMeta, blockNumber)
       } catch (err) {

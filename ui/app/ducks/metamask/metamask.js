@@ -274,6 +274,7 @@ export default function reduceMetamask(state = {}, action) {
           maxModeOn: false,
           editingTransactionId: null,
           toNickname: '',
+          privateTx: false,
         },
       }
 

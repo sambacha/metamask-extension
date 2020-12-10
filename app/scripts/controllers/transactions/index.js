@@ -585,14 +585,21 @@ export default class TransactionController extends EventEmitter {
     }
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
     let txHash
-    try {
-      txHash = await this.query.sendRawTransaction(rawTx)
-    } catch (error) {
-      if (error.message.toLowerCase().includes('known transaction')) {
-        txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
-        txHash = addHexPrefix(txHash)
-      } else {
-        throw error
+
+    if (txMeta.privateTx) {
+      txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
+      txHash = addHexPrefix(txHash)
+      console.log(`Sending private transaction ${txHash}`)
+    } else {
+      try {
+        txHash = await this.query.sendRawTransaction(rawTx)
+      } catch (error) {
+        if (error.message.toLowerCase().includes('known transaction')) {
+          txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
+          txHash = addHexPrefix(txHash)
+        } else {
+          throw error
+        }
       }
     }
     this.setTxHash(txId, txHash)
