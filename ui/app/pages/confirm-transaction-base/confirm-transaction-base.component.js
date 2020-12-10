@@ -361,7 +361,7 @@ export default class ConfirmTransactionBase extends Component {
           <div>
             <Checkbox
               id="confirmTx_privateTransaction"
-              checked={privateTx}
+              checked={typeof privateTx === 'undefined' ? false : privateTx}
               disabled
             />
             <label htmlFor="confirmTx_privateTransaction">
