@@ -40,6 +40,7 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
+    privateTx: PropTypes.bool,
   }
 
   state = {
@@ -154,6 +155,7 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       recipientNickname,
+      privateTx,
     } = this.props
     const {
       primaryTransaction: transaction,
@@ -174,6 +176,15 @@ export default class TransactionListItemDetails extends PureComponent {
                   className="transaction-list-item-details__header-button"
                 >
                   {t('speedUp')}
+                </Button>
+              )}
+              {privateTx && (
+                <Button
+                  type="raised"
+                  onClick={this.handleRetry}
+                  className="transaction-list-item-details__header-button"
+                >
+                  Make Public
                 </Button>
               )}
               {this.renderCancel()}

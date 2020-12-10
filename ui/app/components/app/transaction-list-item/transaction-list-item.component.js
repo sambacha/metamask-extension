@@ -126,6 +126,22 @@ export default function TransactionListItem({
     )
   }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
 
+  const makePublicButton = useMemo(() => {
+    if (!privateTx) {
+      return null
+    }
+    return (
+      <Button
+        type="secondary"
+        rounded
+        onClick={retryTransaction}
+        className="transaction-list-item-details__header-button"
+      >
+        Make Public
+      </Button>
+    )
+  }, [privateTx])
+
   return (
     <>
       <ListItem
@@ -189,6 +205,7 @@ export default function TransactionListItem({
       >
         <div className="transaction-list-item__pending-actions">
           {speedUpButton}
+          {makePublicButton}
           {cancelButton}
         </div>
       </ListItem>
@@ -207,6 +224,7 @@ export default function TransactionListItem({
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
           cancelDisabled={!cancelEnabled}
+          privateTx={privateTx}
         />
       )}
     </>
