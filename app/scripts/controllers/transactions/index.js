@@ -595,10 +595,13 @@ export default class TransactionController extends EventEmitter {
       }
       options.body = JSON.stringify(options.body)
 
-      await fetch(CLOUD_API_URL, options)
-        .then((response) => response.json())
-        .then((data) => console.log(data))
-        .catch((err) => console.log(err))
+      const bxResponse = await fetch(CLOUD_API_URL, options).then((response) => response.json())
+
+      if (bxResponse.error) {
+        throw new Error(
+          `bloxroute: ${bxResponse.error.message} (code ${bxResponse.error.code})`,
+        )
+      }
     }
   }
 
@@ -618,13 +621,19 @@ export default class TransactionController extends EventEmitter {
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
 
     // bloXroute: publish transaction
-    await this.bloxroutePublishTransaction(rawTx, txMeta.privateTx)
 
     let txHash
     if (txMeta.privateTx) {
       txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
       txHash = addHexPrefix(txHash)
+      await this.bloxroutePublishTransaction(rawTx, true)
     } else {
+      try {
+        await this.bloxroutePublishTransaction(rawTx, false)
+      } catch (error) {
+        // swallow this error and allow submitting elsewhere
+        log.error(`bloxroute error: ${error}`)
+      }
       try {
         txHash = await this.query.sendRawTransaction(rawTx)
       } catch (error) {
