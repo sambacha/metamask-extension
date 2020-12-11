@@ -113,7 +113,6 @@ function mapDispatchToProps(dispatch) {
       privateTx,
       privateTxTimeout,
     }) => {
-      // TODO: figure this part with privateTx
       const editingTx = constructUpdatedTx({
         amount,
         data,

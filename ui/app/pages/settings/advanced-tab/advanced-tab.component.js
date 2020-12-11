@@ -466,18 +466,15 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
-
-  //bloXroute: components
-  handleBloxrouteSave () {
-
-    const header  = this.state.bloxrouteAuthHeader
+  // bloXroute: components
+  handleBloxrouteSave() {
+    const header = this.state.bloxrouteAuthHeader
     this.props.setBloxroute(header)
   }
 
-  handleBloxrouteChange (header) {
-
+  handleBloxrouteChange(header) {
     this.setState(() => {
-      let bloxrouteError = ''
+      const bloxrouteError = ''
 
       return {
         bloxrouteAuthHeader: header,
@@ -486,16 +483,19 @@ export default class AdvancedTab extends PureComponent {
     })
   }
 
-  renderBloxrouteControl () {
+  renderBloxrouteControl() {
     const { t } = this.context
     const { bloxrouteAuthHeaderError } = this.state
 
     return (
-      <div className="settings-page__content-row" data-testid="advanced-setting-bloxroute-auth-header">
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-bloxroute-auth-header"
+      >
         <div className="settings-page__content-item">
-          <span>{ "bloXroute" }</span>
+          <span>bloXroute</span>
           <div className="settings-page__content-description">
-            { "Enter your bloXroute authorization header" }
+            Enter your bloXroute authorization header
           </div>
         </div>
         <div className="settings-page__content-item">
@@ -516,7 +516,7 @@ export default class AdvancedTab extends PureComponent {
                 this.handleBloxrouteSave()
               }}
             >
-              { t('save') }
+              {t('save')}
             </Button>
           </div>
         </div>
