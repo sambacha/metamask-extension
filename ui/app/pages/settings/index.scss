@@ -249,4 +249,9 @@
       justify-content: flex-end;
     }
   }
+
+  .valid .MuiInputBase-formControl {
+    border-color: green;
+    border-width: 2px;
+  }
 }
