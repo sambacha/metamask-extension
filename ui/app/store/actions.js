@@ -2216,47 +2216,58 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
       dispatch(displayWarning(err.message))
       throw err
     }
-    dispatch(hideLoadingIndication())
     dispatch(updateMetamaskState(newState))
+    dispatch(showLoadingIndication())
 
     const savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
+    if (!savedBloxrouteAuthHeader) {
+      dispatch(clearBloxrouteError())
+      return
+    }
 
-    let quotaResponse
     const options = {
       method: 'POST',
       headers: {
         Authorization: savedBloxrouteAuthHeader,
-        'Content-Type': 'text/plain',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify({
         method: 'quota_usage',
       }),
     }
-    await fetch(CLOUD_API_URL, options)
+    const quotaResponse = await fetch(CLOUD_API_URL, options)
       .then((response) => response.json())
-      .then((data) => (quotaResponse = data))
 
-    if (!JSON.parse(quotaResponse).result) {
-      dispatch(updateBloxroutePreference(''))
+    if (quotaResponse.error) {
+      dispatch(clearBloxroutePreference())
       if (!isStartup || (isStartup && savedBloxrouteAuthHeader)) {
-        global.platform._showNotification(
-          'title',
-          `ERROR: ${JSON.stringify(JSON.parse(quotaResponse))}`,
-        )
+        dispatch(updateBloxrouteError(quotaResponse.error.data))
       }
     } else if (!isStartup) {
-      global.platform._showNotification(
-        'title',
-        `message: ${JSON.stringify(JSON.parse(quotaResponse).result)}`,
-      )
+      dispatch(updateValidBloxroutePreference())
     }
-
-    return newState
+    dispatch(hideLoadingIndication())
   }
 }
 
 export function updateBloxroutePreference(val) {
   return setPreference('bloxrouteAuthHeader', val)
+}
+
+export function clearBloxroutePreference() {
+  return updateBloxroutePreference('')
+}
+
+export function updateBloxrouteError(val) {
+  return setPreference('bloxrouteAuthHeaderError', val)
+}
+
+export function clearBloxrouteError() {
+  return updateBloxrouteError('')
+}
+
+export function updateValidBloxroutePreference() {
+  return updateBloxrouteError('ok')
 }
 
 export function setBloxroute(val) {

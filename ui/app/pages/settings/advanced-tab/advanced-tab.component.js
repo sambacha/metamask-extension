@@ -35,6 +35,7 @@ export default class AdvancedTab extends PureComponent {
     ipfsGateway: PropTypes.string.isRequired,
     setBloxroute: PropTypes.func.isRequired,
     bloxrouteAuthHeader: PropTypes.string,
+    bloxrouteAuthHeaderError: PropTypes.string,
   }
 
   state = {
@@ -43,7 +44,6 @@ export default class AdvancedTab extends PureComponent {
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
     bloxrouteAuthHeader: this.props.bloxrouteAuthHeader,
-    bloxrouteAuthHeaderError: '',
   }
 
   renderMobileSync() {
@@ -485,8 +485,6 @@ export default class AdvancedTab extends PureComponent {
 
   renderBloxrouteControl() {
     const { t } = this.context
-    const { bloxrouteAuthHeaderError } = this.state
-
     return (
       <div
         className="settings-page__content-row"
@@ -500,18 +498,10 @@ export default class AdvancedTab extends PureComponent {
         </div>
         <div className="settings-page__content-item">
           <div className="settings-page__content-item-col">
-            <TextField
-              type="text"
-              value={this.state.bloxrouteAuthHeader}
-              onChange={(e) => this.handleBloxrouteChange(e.target.value)}
-              error={bloxrouteAuthHeaderError}
-              fullWidth
-              margin="dense"
-            />
+            {this.renderBloxrouteAuthField()}
             <Button
               type="primary"
               className="settings-tab__rpc-save-button"
-              disabled={Boolean(bloxrouteAuthHeaderError)}
               onClick={() => {
                 this.handleBloxrouteSave()
               }}
@@ -521,6 +511,32 @@ export default class AdvancedTab extends PureComponent {
           </div>
         </div>
       </div>
+    )
+  }
+
+  renderBloxrouteAuthField() {
+    const { bloxrouteAuthHeaderError } = this.props
+    const { bloxrouteAuthHeader } = this.state
+
+    const authValid = bloxrouteAuthHeaderError === 'ok'
+
+    let error
+    if (bloxrouteAuthHeader && !authValid) {
+      error = bloxrouteAuthHeaderError
+    } else {
+      error = null
+    }
+
+    return (
+      <TextField
+        type="text"
+        value={bloxrouteAuthHeader}
+        onChange={(e) => this.handleBloxrouteChange(e.target.value)}
+        error={error}
+        fullWidth
+        margin="dense"
+        className={authValid ? '.valid' : null}
+      />
     )
   }
 

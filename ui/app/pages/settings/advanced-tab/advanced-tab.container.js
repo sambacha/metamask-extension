@@ -28,7 +28,12 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
   } = metamask
-  const { showFiatInTestnets, autoLockTimeLimit, bloxrouteAuthHeader } = getPreferences(state)
+  const {
+    showFiatInTestnets,
+    autoLockTimeLimit,
+    bloxrouteAuthHeader,
+    bloxrouteAuthHeaderError,
+  } = getPreferences(state)
 
   return {
     warning,
@@ -41,6 +46,7 @@ export const mapStateToProps = (state) => {
     useNonceField,
     ipfsGateway,
     bloxrouteAuthHeader,
+    bloxrouteAuthHeaderError,
   }
 }
 
@@ -70,7 +76,7 @@ export const mapDispatchToProps = (dispatch) => {
     setIpfsGateway: (value) => {
       return dispatch(setIpfsGateway(value))
     },
-    //bloXroute: set authorization header
+    // bloXroute: set authorization header
     setBloxroute: (value) => {
       return dispatch(setBloxroute(value))
     },

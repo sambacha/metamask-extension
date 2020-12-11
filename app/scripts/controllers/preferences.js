@@ -61,6 +61,7 @@ export default class PreferencesController {
         showFiatInTestnets: false,
         useNativeCurrencyAsPrimaryCurrency: true,
         bloxrouteAuthHeader: undefined,
+        bloxrouteAuthHeaderError: undefined,
       },
       completedOnboarding: false,
       // ENS decentralized website resolution
