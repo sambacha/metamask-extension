@@ -24,6 +24,7 @@ export default class TransactionListItemDetails extends PureComponent {
   static propTypes = {
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
+    onMakePublic: PropTypes.func,
     showCancel: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
     showRetry: PropTypes.bool,
@@ -76,6 +77,12 @@ export default class TransactionListItemDetails extends PureComponent {
   handleRetry = (event) => {
     const { onClose, onRetry } = this.props
     onRetry(event)
+    onClose()
+  }
+
+  handleMakePublic = (event) => {
+    const { onClose, onMakePublic } = this.props
+    onMakePublic(event)
     onClose()
   }
 
@@ -181,7 +188,7 @@ export default class TransactionListItemDetails extends PureComponent {
               {privateTx && (
                 <Button
                   type="raised"
-                  onClick={this.handleRetry}
+                  onClick={this.handleMakePublic}
                   className="transaction-list-item-details__header-button"
                 >
                   Make Public

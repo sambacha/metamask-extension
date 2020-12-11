@@ -903,6 +903,24 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
   }
 }
 
+export function makePublicTx(txId) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.makePublicTransaction(txId, (err) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+          return
+        }
+
+        resolve()
+      })
+    })
+      .then(() => updateMetamaskStateFromBackground())
+      .then((newState) => dispatch(updateMetamaskState(newState)))
+  }
+}
+
 export function completedTx(id) {
   return (dispatch, getState) => {
     const state = getState()

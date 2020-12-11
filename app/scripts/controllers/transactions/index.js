@@ -473,6 +473,15 @@ export default class TransactionController extends EventEmitter {
   }
 
   /**
+   converts transaction to be public and resubmits
+   @param {number} txId
+   */
+  async makePublicTransaction(txId) {
+    this.txStateManager.makePublic(txId)
+    await this.publishTransaction(txId, this.txStateManager.getTx(txId).rawTx)
+  }
+
+  /**
   sets the tx status to approved
   auto fills the nonce
   signs the transaction
@@ -600,14 +609,15 @@ export default class TransactionController extends EventEmitter {
       }
       options.body = JSON.stringify(options.body)
 
+      let bxResponse
       try {
-        const bxResponse = await fetch(CLOUD_API_URL, options).then((response) =>
+        bxResponse = await fetch(CLOUD_API_URL, options).then((response) =>
           response.json(),
         )
       } catch (err) {
         throw new Error(`Could not reach bloxroute: ${err.message}`)
       }
-      if (bxResponse.error) {
+      if (bxResponse && bxResponse.error) {
         throw new Error(
           `bloxroute: ${bxResponse.error.message} (code ${bxResponse.error.code})`,
         )

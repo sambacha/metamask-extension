@@ -18,6 +18,7 @@ import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../../shared/constants/transaction'
+import { useMakePublic } from '../../../hooks/useMakePublic'
 
 export default function TransactionListItem({
   transactionGroup,
@@ -36,6 +37,7 @@ export default function TransactionListItem({
     transactionGroup,
   )
   const retryTransaction = useRetryTransaction(transactionGroup)
+  const makePublic = useMakePublic(transactionGroup)
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
@@ -134,13 +136,13 @@ export default function TransactionListItem({
       <Button
         type="secondary"
         rounded
-        onClick={retryTransaction}
+        onClick={makePublic}
         className="transaction-list-item-details__header-button"
       >
         Make Public
       </Button>
     )
-  }, [privateTx])
+  }, [privateTx, makePublic])
 
   return (
     <>
@@ -218,6 +220,7 @@ export default function TransactionListItem({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
+          onMakePublic={makePublic}
           showRetry={status === TRANSACTION_STATUSES.FAILED && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}

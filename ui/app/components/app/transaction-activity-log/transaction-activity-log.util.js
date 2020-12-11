@@ -16,12 +16,14 @@ import {
   SUBMITTED_STATUS,
   CONFIRMED_STATUS,
   DROPPED_STATUS,
+  TRANSACTION_PRIVATE_TO_PUBLIC_EVENT,
 } from './transaction-activity-log.constants'
 
 // path constants
 const STATUS_PATH = '/status'
 const GAS_PRICE_PATH = '/txParams/gasPrice'
 const GAS_LIMIT_PATH = '/txParams/gas'
+const PRIVATE_PATH = '/privateTx'
 
 // op constants
 const REPLACE_OP = 'replace'
@@ -30,6 +32,7 @@ const eventPathsHash = {
   [STATUS_PATH]: true,
   [GAS_PRICE_PATH]: true,
   [GAS_LIMIT_PATH]: true,
+  [PRIVATE_PATH]: true,
 }
 
 const statusHash = {
@@ -158,6 +161,17 @@ export function getActivities(transaction, isFirstTransaction = false) {
                 })
               }
 
+              break
+            }
+            case PRIVATE_PATH: {
+              if (!value) {
+                events.push({
+                  id,
+                  hash,
+                  eventKey: TRANSACTION_PRIVATE_TO_PUBLIC_EVENT,
+                  timestamp,
+                })
+              }
               break
             }
 

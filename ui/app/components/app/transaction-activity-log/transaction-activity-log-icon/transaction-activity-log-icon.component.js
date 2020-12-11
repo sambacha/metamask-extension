@@ -11,6 +11,7 @@ import {
   TRANSACTION_ERRORED_EVENT,
   TRANSACTION_CANCEL_ATTEMPTED_EVENT,
   TRANSACTION_CANCEL_SUCCESS_EVENT,
+  TRANSACTION_PRIVATE_TO_PUBLIC_EVENT,
 } from '../transaction-activity-log.constants'
 
 const imageHash = {
@@ -22,6 +23,7 @@ const imageHash = {
   [TRANSACTION_ERRORED_EVENT]: '/images/icons/error.svg',
   [TRANSACTION_CANCEL_ATTEMPTED_EVENT]: '/images/icons/cancelled.svg',
   [TRANSACTION_CANCEL_SUCCESS_EVENT]: '/images/icons/cancelled.svg',
+  [TRANSACTION_PRIVATE_TO_PUBLIC_EVENT]: '/images/icons/retry.svg',
 }
 
 export default class TransactionActivityLogIcon extends PureComponent {

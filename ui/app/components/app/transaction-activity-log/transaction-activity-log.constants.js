@@ -7,6 +7,7 @@ export const TRANSACTION_UPDATED_EVENT = 'transactionUpdated'
 export const TRANSACTION_ERRORED_EVENT = 'transactionErrored'
 export const TRANSACTION_CANCEL_ATTEMPTED_EVENT = 'transactionCancelAttempted'
 export const TRANSACTION_CANCEL_SUCCESS_EVENT = 'transactionCancelSuccess'
+export const TRANSACTION_PRIVATE_TO_PUBLIC_EVENT = 'transactionPrivateToPublic'
 
 export const SUBMITTED_STATUS = 'submitted'
 export const CONFIRMED_STATUS = 'confirmed'

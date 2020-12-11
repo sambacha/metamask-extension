@@ -661,6 +661,10 @@ export default class MetamaskController extends EventEmitter {
         txController.updateAndApproveTransaction,
         txController,
       ),
+      makePublicTransaction: nodeify(
+        txController.makePublicTransaction,
+        txController,
+      ),
       createCancelTransaction: nodeify(this.createCancelTransaction, this),
       createSpeedUpTransaction: nodeify(this.createSpeedUpTransaction, this),
       getFilteredTxList: nodeify(txController.getFilteredTxList, txController),
