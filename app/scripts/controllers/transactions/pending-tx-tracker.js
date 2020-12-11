@@ -50,7 +50,7 @@ export default class PendingTransactionTracker extends EventEmitter {
 
   /**
     checks the network for signed txs and releases the nonce global lock if it is
-   */
+  */
   async updatePendingTxs() {
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
