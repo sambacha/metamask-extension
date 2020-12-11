@@ -535,7 +535,7 @@ export default class AdvancedTab extends PureComponent {
         error={error}
         fullWidth
         margin="dense"
-        className={authValid ? '.valid' : null}
+        className={authValid ? 'valid' : null}
       />
     )
   }
