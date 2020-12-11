@@ -3,11 +3,12 @@ import PropTypes from 'prop-types'
 import { Checkbox } from '@material-ui/core'
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component'
 import Dialog from '../../../components/ui/dialog'
+import TextField from '../../../components/ui/text-field'
 import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
-import TextField from '../../../components/ui/text-field'
+import SendRowWrapper from './send-row-wrapper'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -38,10 +39,7 @@ export default class SendContent extends Component {
   }
 
   setPrivateTxTimeout = (value) => {
-    this.props.updateSendPrivateTx(
-      this.props.privateTx,
-      value,
-    )
+    this.props.updateSendPrivateTx(this.props.privateTx, value)
   }
 
   render() {
@@ -59,31 +57,29 @@ export default class SendContent extends Component {
           )}
           {showPrivateTx && (
             <>
-              <Checkbox
-                id="sendContent_privateTransaction"
-                checked={privateTx}
-                disabled={false}
-                onClick={this.togglePrivateTx}
-              />
-              <label htmlFor="sendContent_privateTransaction">
-                Private Transaction
-              </label>
-              <div className="confirm-detail-row">
-                <div className="confirm-detail-row__label">
-                  Private Transaction Timeout
-                </div>
-                <TextField
-                  type="number"
-                  min="0"
-                  placeholder="0"
-                  fullWidth
-                  margin="dense"
-                  value={privateTxTimeout}
-                  onChange={({ target: { value } }) => {
-                    this.setPrivateTxTimeout(Number(value))
-                  }}
+              <SendRowWrapper label="Private:">
+                <Checkbox
+                  id="sendContent_privateTransaction"
+                  checked={privateTx}
+                  disabled={false}
+                  onClick={this.togglePrivateTx}
                 />
-              </div>
+              </SendRowWrapper>
+              {privateTx && (
+                <SendRowWrapper label="Timeout:">
+                  <TextField
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    fullWidth
+                    margin="dense"
+                    value={privateTxTimeout}
+                    onChange={({ target: { value } }) => {
+                      this.setPrivateTxTimeout(Number(value))
+                    }}
+                  />
+                </SendRowWrapper>
+              )}
             </>
           )}
         </div>
