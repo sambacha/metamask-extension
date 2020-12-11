@@ -385,7 +385,7 @@ export default class ConfirmTransactionBase extends Component {
                       disabled
                       fullWidth
                       margin="dense"
-                      value={privateTxTimeout}
+                      value={typeof privateTxTimeout === 'undefined' ? 0 : privateTxTimeout}
                     />
                   </div>
                 </div>

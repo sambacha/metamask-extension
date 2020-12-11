@@ -609,8 +609,6 @@ export default class TransactionController extends EventEmitter {
       if (privateTx) {
         options.body.method = 'blxr_private_tx'
         options.body.params.timeout = privateTxTimeout
-
-        console.log(`Publish private transaction to bloxroute with timeout ${privateTxTimeout}`)
       }
       options.body = JSON.stringify(options.body)
 

@@ -38,7 +38,6 @@ export default class SendContent extends Component {
   }
 
   setPrivateTxTimeout = (value) => {
-    console.log(`setting private timeout ${value}`)
     this.props.updateSendPrivateTx(
       this.props.privateTx,
       value,
@@ -81,7 +80,7 @@ export default class SendContent extends Component {
                   margin="dense"
                   value={privateTxTimeout}
                   onChange={({ target: { value } }) => {
-                    this.setPrivateTxTimeout(value)
+                    this.setPrivateTxTimeout(Number(value))
                   }}
                 />
               </div>
