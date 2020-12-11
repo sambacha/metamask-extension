@@ -314,7 +314,7 @@ export default class ConfirmTransactionBase extends Component {
           </div>
           <div
             className={
-              useNonceField ? 'confirm-page-container-content__gas-fee' : null
+              useNonceField || showPrivateTx ? 'confirm-page-container-content__gas-fee' : null
             }
           >
             <ConfirmDetailRow
@@ -331,6 +331,36 @@ export default class ConfirmTransactionBase extends Component {
               primaryValueTextColor="#2f9ae0"
             />
           </div>
+          {showPrivateTx && (
+            <>
+              <div className="confirm-page-container-content__private-tx">
+                <div className="confirm-detail-row">
+                  <div className="confirm-detail-row__label">Private</div>
+                  <div>
+                    <Checkbox
+                      id="confirmTx_privateTransaction"
+                      checked={
+                        typeof privateTx === 'undefined' ? false : privateTx
+                      }
+                      disabled
+                    />
+                  </div>
+                </div>
+                {privateTx && (
+                  <div className="confirm-detail-row">
+                    <div className="confirm-detail-row__label">Timeout</div>
+                    <div className="confirm-detail-row__details">
+                      <div className="confirm-detail-row__primary">
+                        {typeof privateTxTimeout === 'undefined'
+                          ? 0
+                          : privateTxTimeout}
+                      </div>
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
           {useNonceField ? (
             <div>
               <div className="confirm-detail-row">
@@ -362,36 +392,6 @@ export default class ConfirmTransactionBase extends Component {
               </div>
             </div>
           ) : null}
-          <div>
-            {showPrivateTx && (
-              <>
-                <Checkbox
-                  id="confirmTx_privateTransaction"
-                  checked={typeof privateTx === 'undefined' ? false : privateTx}
-                  disabled
-                />
-                <label htmlFor="confirmTx_privateTransaction">
-                  Private Transaction
-                </label>
-                <div className="confirm-detail-row">
-                  <div className="confirm-detail-row__label">
-                    Private Transaction Timeout
-                  </div>
-                  <div>
-                    <TextField
-                      type="number"
-                      min="0"
-                      placeholder="0"
-                      disabled
-                      fullWidth
-                      margin="dense"
-                      value={typeof privateTxTimeout === 'undefined' ? 0 : privateTxTimeout}
-                    />
-                  </div>
-                </div>
-              </>
-            )}
-          </div>
         </div>
       )
     )
