@@ -7,18 +7,21 @@ import ConfirmSendEther from './confirm-send-ether.component'
 
 const mapStateToProps = (state) => {
   const {
-    confirmTransaction: { txData: { txParams, privateTx } = {} },
+    confirmTransaction: {
+      txData: { txParams, privateTx, privateTxTimeout } = {},
+    },
   } = state
 
   return {
     txParams,
     privateTx,
+    privateTxTimeout,
   }
 }
 
 const mapDispatchToProps = (dispatch) => {
   return {
-    editTransaction: (txData, privateTx) => {
+    editTransaction: (txData, privateTx, privateTxTimeout) => {
       const { id, txParams } = txData
       const { from, gas: gasLimit, gasPrice, to, value: amount } = txParams
 
@@ -33,6 +36,7 @@ const mapDispatchToProps = (dispatch) => {
           errors: { to: null, amount: null },
           editingTransactionId: id?.toString(),
           privateTx,
+          privateTxTimeout,
         }),
       )
 

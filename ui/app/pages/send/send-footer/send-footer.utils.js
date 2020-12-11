@@ -12,8 +12,9 @@ export function constructTxParams({
   gas,
   gasPrice,
   privateTx,
+  privateTxTimeout,
 }) {
-  const txParams = {
+  let txParams = {
     data,
     from,
     value: '0',
@@ -27,7 +28,10 @@ export function constructTxParams({
     txParams.to = to
   }
 
-  return addHexPrefixToObjectValues(txParams)
+  txParams = addHexPrefixToObjectValues(txParams)
+  // skip adding hex prefix to timeout
+  txParams.privateTxTimeout = privateTxTimeout
+  return txParams
 }
 
 export function constructUpdatedTx({
@@ -41,6 +45,7 @@ export function constructUpdatedTx({
   to,
   unapprovedTxs,
   privateTx,
+  privateTxTimeout,
 }) {
   const unapprovedTx = unapprovedTxs[editingTransactionId]
   const txParamsData = unapprovedTx.txParams.data
@@ -51,6 +56,7 @@ export function constructUpdatedTx({
     ...unapprovedTx,
     txParams: Object.assign(unapprovedTx.txParams, {
       privateTx,
+      privateTxTimeout,
       ...addHexPrefixToObjectValues({
         data: txParamsData,
         to,

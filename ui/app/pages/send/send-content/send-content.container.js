@@ -2,7 +2,10 @@ import { connect } from 'react-redux'
 import {
   getSendTo,
   accountsWithSendEtherInfoSelector,
-  getAddressBookEntry, getSendPrivateTx, getBloxrouteAuthorized,
+  getAddressBookEntry,
+  getSendPrivateTx,
+  getBloxrouteAuthorized,
+  getSendPrivateTxTimeout,
 } from '../../../selectors'
 
 import * as actions from '../../../store/actions'
@@ -22,6 +25,7 @@ function mapStateToProps(state) {
     to,
     showPrivateTx: Boolean(getBloxrouteAuthorized(state)),
     privateTx: getSendPrivateTx(state),
+    privateTxTimeout: getSendPrivateTxTimeout(state),
   }
 }
 
@@ -34,8 +38,8 @@ function mapDispatchToProps(dispatch) {
           recipient,
         }),
       ),
-    updateSendPrivateTx: (privateTx) =>
-      dispatch(updateSendPrivateTx(privateTx)),
+    updateSendPrivateTx: (privateTx, privateTxTimeout) =>
+      dispatch(updateSendPrivateTx(privateTx, privateTxTimeout)),
   }
 }
 

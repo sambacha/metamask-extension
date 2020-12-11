@@ -31,6 +31,7 @@ export default function reduceMetamask(state = {}, action) {
       ensResolution: null,
       ensResolutionError: '',
       privateTx: false,
+      privateTxTimeout: 0,
     },
     useBlockie: false,
     featureFlags: {},
@@ -187,7 +188,8 @@ export default function reduceMetamask(state = {}, action) {
         ...metamaskState,
         send: {
           ...metamaskState.send,
-          privateTx: action.value,
+          privateTx: action.value.privateTx,
+          privateTxTimeout: action.value.privateTxTimeout,
         },
       }
 
@@ -276,6 +278,7 @@ export default function reduceMetamask(state = {}, action) {
           editingTransactionId: null,
           toNickname: '',
           privateTx: false,
+          privateTxTimeout: 0,
         },
       }
 

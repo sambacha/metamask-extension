@@ -36,7 +36,8 @@ import {
   getMetaMaskAccounts,
   getUseNonceField,
   getPreferences,
-  transactionFeeSelector, getBloxrouteAuthorized,
+  transactionFeeSelector,
+  getBloxrouteAuthorized,
 } from '../../selectors'
 import { getMostRecentOverviewPage } from '../../ducks/history/history'
 import ConfirmTransactionBase from './confirm-transaction-base.component'
@@ -85,6 +86,7 @@ const mapStateToProps = (state, ownProps) => {
     id: transactionId,
     transactionCategory,
     privateTx,
+    privateTxTimeout,
   } = txData
   const transaction =
     Object.values(unapprovedTxs).find(
@@ -172,6 +174,7 @@ const mapStateToProps = (state, ownProps) => {
     transactionStatus,
     nonce,
     privateTx,
+    privateTxTimeout,
     assetImage,
     unapprovedTxs,
     unapprovedTxCount,

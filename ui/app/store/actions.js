@@ -740,10 +740,13 @@ export function updateSendAmount(amount) {
   }
 }
 
-export function updateSendPrivateTx(privateTx) {
+export function updateSendPrivateTx(privateTx, privateTxTimeout) {
   return {
     type: actionConstants.UPDATE_SEND_PRIVATE_TX,
-    value: privateTx,
+    value: {
+      privateTx,
+      privateTxTimeout,
+    },
   }
 }
 

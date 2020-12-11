@@ -239,6 +239,7 @@ export default class TransactionController extends EventEmitter {
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPES.STANDARD,
       privateTx: txParams.privateTx,
+      privateTxTimeout: txParams.privateTxTimeout,
     })
 
     if (origin === 'metamask') {
@@ -460,6 +461,7 @@ export default class TransactionController extends EventEmitter {
   */
   async updateTransaction(txMeta) {
     txMeta.privateTx = txMeta.txParams.privateTx
+    txMeta.privateTxTimeout = txMeta.txParams.privateTxTimeout
     this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
   }
 
@@ -584,7 +586,7 @@ export default class TransactionController extends EventEmitter {
   // bloXroute: send transaction to Cloud-API
   // This function doesn't really take into account matching network number with
   // the bloXroute authorization header.
-  async bloxroutePublishTransaction(rawTx, privateTx) {
+  async bloxroutePublishTransaction(rawTx, privateTx, privateTxTimeout = 0) {
     const bloxrouteAuthHeader = this.getBloxrouteAuthHeader()
 
     if (
@@ -606,6 +608,9 @@ export default class TransactionController extends EventEmitter {
       }
       if (privateTx) {
         options.body.method = 'blxr_private_tx'
+        options.body.params.timeout = privateTxTimeout
+
+        console.log(`Publish private transaction to bloxroute with timeout ${privateTxTimeout}`)
       }
       options.body = JSON.stringify(options.body)
 
@@ -646,7 +651,11 @@ export default class TransactionController extends EventEmitter {
     if (txMeta.privateTx) {
       txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
       txHash = addHexPrefix(txHash)
-      await this.bloxroutePublishTransaction(rawTx, true)
+      await this.bloxroutePublishTransaction(
+        rawTx,
+        true,
+        txMeta.privateTxTimeout,
+      )
     } else {
       try {
         await this.bloxroutePublishTransaction(rawTx, false)

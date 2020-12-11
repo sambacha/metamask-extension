@@ -62,6 +62,10 @@ export function getSendPrivateTx(state) {
   return state.metamask.send.privateTx
 }
 
+export function getSendPrivateTxTimeout(state) {
+  return state.metamask.send.privateTxTimeout
+}
+
 export function getBloxrouteAuthorized(state) {
   return state.metamask.preferences.bloxrouteAuthHeader
 }

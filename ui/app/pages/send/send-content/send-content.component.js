@@ -7,6 +7,7 @@ import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
+import TextField from '../../../components/ui/text-field'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -21,6 +22,7 @@ export default class SendContent extends Component {
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
     privateTx: PropTypes.bool,
+    privateTxTimeout: PropTypes.number,
     updateSendPrivateTx: PropTypes.func,
     showPrivateTx: PropTypes.bool,
   }
@@ -29,11 +31,22 @@ export default class SendContent extends Component {
 
   togglePrivateTx = (event) => {
     event.preventDefault()
-    this.props.updateSendPrivateTx(!this.props.privateTx)
+    this.props.updateSendPrivateTx(
+      !this.props.privateTx,
+      this.props.privateTxTimeout,
+    )
+  }
+
+  setPrivateTxTimeout = (value) => {
+    console.log(`setting private timeout ${value}`)
+    this.props.updateSendPrivateTx(
+      this.props.privateTx,
+      value,
+    )
   }
 
   render() {
-    const { warning, privateTx, showPrivateTx } = this.props
+    const { warning, privateTx, showPrivateTx, privateTxTimeout } = this.props
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -56,6 +69,22 @@ export default class SendContent extends Component {
               <label htmlFor="sendContent_privateTransaction">
                 Private Transaction
               </label>
+              <div className="confirm-detail-row">
+                <div className="confirm-detail-row__label">
+                  Private Transaction Timeout
+                </div>
+                <TextField
+                  type="number"
+                  min="0"
+                  placeholder="0"
+                  fullWidth
+                  margin="dense"
+                  value={privateTxTimeout}
+                  onChange={({ target: { value } }) => {
+                    this.setPrivateTxTimeout(value)
+                  }}
+                />
+              </div>
             </>
           )}
         </div>

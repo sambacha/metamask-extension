@@ -65,6 +65,7 @@ export default class ConfirmTransactionBase extends Component {
     txData: PropTypes.object,
     privateTx: PropTypes.bool,
     showPrivateTx: PropTypes.bool,
+    privateTxTimeout: PropTypes.number,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
     updateGasAndCalculate: PropTypes.func,
@@ -266,6 +267,7 @@ export default class ConfirmTransactionBase extends Component {
       isMainnet,
       privateTx,
       showPrivateTx,
+      privateTxTimeout,
     } = this.props
 
     if (hideDetails) {
@@ -371,6 +373,22 @@ export default class ConfirmTransactionBase extends Component {
                 <label htmlFor="confirmTx_privateTransaction">
                   Private Transaction
                 </label>
+                <div className="confirm-detail-row">
+                  <div className="confirm-detail-row__label">
+                    Private Transaction Timeout
+                  </div>
+                  <div>
+                    <TextField
+                      type="number"
+                      min="0"
+                      placeholder="0"
+                      disabled
+                      fullWidth
+                      margin="dense"
+                      value={privateTxTimeout}
+                    />
+                  </div>
+                </div>
               </>
             )}
           </div>
