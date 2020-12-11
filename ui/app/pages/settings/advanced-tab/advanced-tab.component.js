@@ -43,7 +43,7 @@ export default class AdvancedTab extends PureComponent {
     lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
-    bloxrouteAuthHeader: this.props.bloxrouteAuthHeader,
+    bloxrouteAuthHeader: this.props.bloxrouteAuthHeader || '',
   }
 
   renderMobileSync() {
