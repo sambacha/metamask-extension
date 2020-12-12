@@ -30,8 +30,7 @@ export default class SendContent extends Component {
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
-  togglePrivateTx = (event) => {
-    event.preventDefault()
+  togglePrivateTx = () => {
     this.props.updateSendPrivateTx(
       !this.props.privateTx,
       this.props.privateTxTimeout,
