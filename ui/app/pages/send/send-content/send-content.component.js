@@ -1,6 +1,5 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from '@material-ui/core'
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component'
 import Dialog from '../../../components/ui/dialog'
 import TextField from '../../../components/ui/text-field'
@@ -9,6 +8,7 @@ import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
 import SendRowWrapper from './send-row-wrapper'
+import CheckBox from '../../../components/ui/check-box'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -56,11 +56,10 @@ export default class SendContent extends Component {
             <SendHexDataRow updateGas={this.updateGas} />
           )}
           {showPrivateTx && (
-            <>
+            <div>
               <SendRowWrapper label="Private:">
-                <Checkbox
-                  id="sendContent_privateTransaction"
-                  checked={privateTx}
+                <CheckBox
+                  checked={typeof privateTx === 'undefined' ? false : privateTx}
                   disabled={false}
                   onClick={this.togglePrivateTx}
                 />
@@ -80,7 +79,7 @@ export default class SendContent extends Component {
                   />
                 </SendRowWrapper>
               )}
-            </>
+            </div>
           )}
         </div>
       </PageContainerContent>

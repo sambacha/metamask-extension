@@ -42,6 +42,7 @@ export default function reduceMetamask(state = {}, action) {
       showFiatInTestnets: false,
       useNativeCurrencyAsPrimaryCurrency: true,
       bloxrouteAuthHeader: undefined,
+      bloxrouteAuthHeaderError: undefined,
     },
     firstTimeFlowType: null,
     completedOnboarding: false,

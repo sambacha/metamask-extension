@@ -1,7 +1,6 @@
 import ethUtil from 'ethereumjs-util'
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Checkbox } from '@material-ui/core'
 import { ENVIRONMENT_TYPE_NOTIFICATION } from '../../../../app/scripts/lib/enums'
 import { getEnvironmentType } from '../../../../app/scripts/lib/util'
 import ConfirmPageContainer, {
@@ -23,6 +22,7 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction'
+import CheckBox from '../../components/ui/check-box'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -337,8 +337,7 @@ export default class ConfirmTransactionBase extends Component {
                 <div className="confirm-detail-row">
                   <div className="confirm-detail-row__label">Private</div>
                   <div>
-                    <Checkbox
-                      id="confirmTx_privateTransaction"
+                    <CheckBox
                       checked={
                         typeof privateTx === 'undefined' ? false : privateTx
                       }
