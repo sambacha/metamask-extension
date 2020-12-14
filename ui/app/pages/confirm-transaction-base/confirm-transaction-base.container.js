@@ -2,7 +2,7 @@ import { connect } from 'react-redux'
 import { compose } from 'redux'
 import { withRouter } from 'react-router-dom'
 import contractMap from '@metamask/contract-metadata'
-import { clearConfirmTransaction } from '../../ducks/confirm-transaction/confirm-transaction.duck'
+import { clearConfirmTransaction, updatePrivateTx } from '../../ducks/confirm-transaction/confirm-transaction.duck'
 
 import {
   updateCustomNonce,
@@ -143,7 +143,7 @@ const mapStateToProps = (state, ownProps) => {
 
   const methodData = getKnownMethodData(state, data) || {}
 
-  let fullTxData = { ...txData, ...transaction }
+  let fullTxData = { ...txData, ...transaction, privateTx, privateTxTimeout }
   if (customTxParamsData) {
     fullTxData = {
       ...fullTxData,
@@ -233,6 +233,8 @@ export const mapDispatchToProps = (dispatch) => {
       dispatch(updateAndApproveTx(customNonceMerge(txData))),
     setMetaMetricsSendCount: (val) => dispatch(setMetaMetricsSendCount(val)),
     getNextNonce: () => dispatch(getNextNonce()),
+    updatePrivateTx: (privateTx, privateTxTimeout) =>
+      dispatch(updatePrivateTx({ privateTx, privateTxTimeout })),
   }
 }
 
