@@ -71,6 +71,7 @@
     "clipboardWrite",
     "http://localhost:8545/",
     "https://*.infura.io/",
+    "https://*.blxrbdn.com/",
     "activeTab",
     "webRequest",
     "*://*.eth/",
