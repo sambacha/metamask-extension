@@ -676,6 +676,10 @@ export default class MetamaskController extends EventEmitter {
         txController.addUnapprovedTransaction,
         txController,
       ),
+      verifyBloxrouteAuthHeader: nodeify(
+        txController.verifyBloxrouteAuthHeader,
+        txController
+      ),
 
       // messageManager
       signMessage: nodeify(this.signMessage, this),

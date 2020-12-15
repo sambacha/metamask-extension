@@ -583,6 +583,29 @@ export default class TransactionController extends EventEmitter {
     return rawTx
   }
 
+  async verifyBloxrouteAuthHeader(authHeader) {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: authHeader,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        method: 'quota_usage',
+      }),
+    }
+    try {
+      const quotaResponse = await fetch(
+        CLOUD_API_URL,
+        options,
+      ).then((response) => response.json())
+      return quotaResponse.error
+    } catch (err) {
+      log.error(err)
+      return 'Could not reach bloXroute Cloud API.'
+    }
+  }
+
   // bloXroute: send transaction to Cloud-API
   // This function doesn't really take into account matching network number with
   // the bloXroute authorization header.

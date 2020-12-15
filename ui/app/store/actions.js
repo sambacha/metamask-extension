@@ -2209,6 +2209,8 @@ export function setIpfsGateway(val) {
 export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
   return async (dispatch) => {
     dispatch(showLoadingIndication())
+
+    // update background state to fetch header
     let newState
     try {
       newState = await promisifiedBackground.getState()
@@ -2218,30 +2220,19 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
       throw err
     }
     dispatch(updateMetamaskState(newState))
-    dispatch(showLoadingIndication())
-
     const savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
     if (!savedBloxrouteAuthHeader) {
       dispatch(clearBloxrouteError())
       return
     }
 
-    const options = {
-      method: 'POST',
-      headers: {
-        Authorization: savedBloxrouteAuthHeader,
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({
-        method: 'quota_usage',
-      }),
-    }
-    const quotaResponse = await fetch(CLOUD_API_URL, options)
-      .then((response) => response.json())
-
-    if (quotaResponse.error) {
+    dispatch(showLoadingIndication())
+    const error = await promisifiedBackground.verifyBloxrouteAuthHeader(
+      savedBloxrouteAuthHeader,
+    )
+    if (error) {
       dispatch(clearBloxroutePreference())
-      dispatch(updateBloxrouteError(quotaResponse.error.data))
+      dispatch(updateBloxrouteError(error.data))
     } else if (!isStartup) {
       dispatch(updateValidBloxroutePreference())
     }
