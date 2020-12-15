@@ -113,7 +113,7 @@ export default function TransactionListItem({
   ])
 
   const speedUpButton = useMemo(() => {
-    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
+    if (!shouldShowSpeedUp || !isPending || isUnapproved || privateTx) {
       return null
     }
     return (
@@ -126,7 +126,14 @@ export default function TransactionListItem({
         {t('speedUp')}
       </Button>
     )
-  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    t,
+    isPending,
+    retryTransaction,
+    privateTx,
+  ])
 
   const makePublicButton = useMemo(() => {
     if (!privateTx) {

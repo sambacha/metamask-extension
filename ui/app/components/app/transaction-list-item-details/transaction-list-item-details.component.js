@@ -176,7 +176,7 @@ export default class TransactionListItemDetails extends PureComponent {
           <div className="transaction-list-item-details__header">
             <div>{t('details')}</div>
             <div className="transaction-list-item-details__header-buttons">
-              {showSpeedUp && (
+              {showSpeedUp && privateTx && (
                 <Button
                   type="raised"
                   onClick={this.handleRetry}
