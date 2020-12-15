@@ -59,6 +59,7 @@ export function tryUnlockMetamask(password) {
       })
     })
       .then(() => {
+        dispatch(checkBloxrouteAuthHeaderValidity(true))
         dispatch(unlockSucceeded())
         return forceUpdateMetamaskState(dispatch)
       })
@@ -2240,9 +2241,7 @@ export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
 
     if (quotaResponse.error) {
       dispatch(clearBloxroutePreference())
-      if (!isStartup || (isStartup && savedBloxrouteAuthHeader)) {
-        dispatch(updateBloxrouteError(quotaResponse.error.data))
-      }
+      dispatch(updateBloxrouteError(quotaResponse.error.data))
     } else if (!isStartup) {
       dispatch(updateValidBloxroutePreference())
     }
