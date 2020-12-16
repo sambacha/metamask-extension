@@ -43,6 +43,7 @@ export default class PendingTransactionTracker extends EventEmitter {
     this.nonceTracker = config.nonceTracker
     this.getPendingTransactions = config.getPendingTransactions
     this.getCompletedTransactions = config.getCompletedTransactions
+    this.getSignedTransactions = config.getSignedTransactions
     this.publishTransaction = config.publishTransaction
     this.approveTransaction = config.approveTransaction
     this.confirmTransaction = config.confirmTransaction
@@ -55,7 +56,12 @@ export default class PendingTransactionTracker extends EventEmitter {
     // in order to keep the nonceTracker accurate we block it while updating pending transactions
     const nonceGlobalLock = await this.nonceTracker.getGlobalLock()
     try {
-      const pendingTxs = this.getPendingTransactions()
+      // track both transactions submitted by metamask and signed transactions
+      // submitted by DApps
+      const pendingTxs = [
+        ...this.getPendingTransactions(),
+        ...this.getSignedTransactions(),
+      ]
       await Promise.all(
         pendingTxs.map((txMeta) => this._checkPendingTx(txMeta)),
       )
@@ -80,6 +86,10 @@ export default class PendingTransactionTracker extends EventEmitter {
       return
     }
     for (const txMeta of pending) {
+      // bloxroute: skip signed transactions, unnecessary
+      if (txMeta.signOnly) {
+        continue
+      }
       try {
         await this._resubmitTx(txMeta, blockNumber)
       } catch (err) {
@@ -168,8 +178,11 @@ export default class PendingTransactionTracker extends EventEmitter {
     const txHash = txMeta.hash
     const txId = txMeta.id
 
-    // Only check submitted txs
-    if (txMeta.status !== TRANSACTION_STATUSES.SUBMITTED) {
+    // Only check submitted or signed txs
+    if (
+      txMeta.status !== TRANSACTION_STATUSES.SUBMITTED &&
+      txMeta.status !== TRANSACTION_STATUSES.SIGNED
+    ) {
       return
     }
 

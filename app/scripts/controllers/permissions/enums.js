@@ -76,6 +76,7 @@ export const SAFE_METHODS = [
   'eth_protocolVersion',
   'eth_sendRawTransaction',
   'eth_sendTransaction',
+  'eth_signTransaction',
   'eth_sign',
   'personal_sign',
   'personal_ecRecover',

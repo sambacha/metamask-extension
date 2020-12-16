@@ -43,18 +43,34 @@ export default function TransactionStatus({
   error,
   isEarliestNonce,
   className,
+  signOnly,
+  origin,
 }) {
   const t = useI18nContext()
-  const tooltipText = error?.rpc?.message || error?.message
-  let statusKey = status
-  if (pendingStatusHash[status]) {
-    statusKey = isEarliestNonce
-      ? TRANSACTION_GROUP_STATUSES.PENDING
-      : QUEUED_PSEUDO_STATUS
-  }
 
-  const statusText =
-    statusKey === TRANSACTION_STATUSES.CONFIRMED ? date : t(statusKey)
+  let tooltipText
+  let statusText
+  let statusClass
+
+  if (signOnly && status === TRANSACTION_STATUSES.SIGNED) {
+    statusText = 'Signed'
+    statusClass = statusToClassNameHash[TRANSACTION_GROUP_STATUSES.PENDING]
+    tooltipText =
+      `Transaction has been signed and submitted to ${origin}. ` +
+      `Metamask is now waiting for the DApp to submit and confirm the transaction.`
+  } else {
+    let statusKey = status
+    tooltipText = error?.rpc?.message || error?.message
+    if (pendingStatusHash[status]) {
+      statusKey = isEarliestNonce
+        ? TRANSACTION_GROUP_STATUSES.PENDING
+        : QUEUED_PSEUDO_STATUS
+    }
+    statusClass = statusToClassNameHash[statusKey]
+
+    statusText =
+      statusKey === TRANSACTION_STATUSES.CONFIRMED ? date : t(statusKey)
+  }
 
   return (
     <Tooltip
@@ -63,7 +79,7 @@ export default function TransactionStatus({
       wrapperClassName={classnames(
         'transaction-status',
         className,
-        statusToClassNameHash[statusKey],
+        statusClass,
       )}
     >
       {statusText}
@@ -77,4 +93,6 @@ TransactionStatus.propTypes = {
   date: PropTypes.string,
   error: PropTypes.object,
   isEarliestNonce: PropTypes.bool,
+  signOnly: PropTypes.bool,
+  origin: PropTypes.string,
 }

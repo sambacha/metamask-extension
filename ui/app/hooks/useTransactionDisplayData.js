@@ -72,6 +72,7 @@ export function useTransactionDisplayData(transactionGroup) {
   const displayedStatusKey = getStatusKey(primaryTransaction)
   const isPending = displayedStatusKey in PENDING_STATUS_HASH
   const isSubmitted = displayedStatusKey === TRANSACTION_STATUSES.SUBMITTED
+  const { signOnly } = primaryTransaction
 
   const primaryValue = primaryTransaction.txParams?.value
   let prefix = '-'
@@ -248,5 +249,7 @@ export function useTransactionDisplayData(transactionGroup) {
     displayedStatusKey,
     isPending,
     isSubmitted,
+    signOnly,
+    origin,
   }
 }

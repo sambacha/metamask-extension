@@ -9,6 +9,8 @@ import {
   snapshotFromTxMeta,
 } from './lib/tx-state-history-helpers'
 import { getFinalStates, normalizeTxParams } from './lib/util'
+import ethUtil from 'ethereumjs-util'
+import { addHexPrefix } from '../../lib/util'
 
 /**
  * TransactionStatuses reimported from the shared transaction constants file
@@ -131,6 +133,19 @@ export default class TransactionStateManager extends EventEmitter {
    */
   getPendingTransactions(address) {
     const opts = { status: TRANSACTION_STATUSES.SUBMITTED }
+    if (address) {
+      opts.from = address
+    }
+    return this.getFilteredTxList(opts)
+  }
+
+  /**
+   * @param {string} [address] - hex prefixed address to sort the txMetas for [optional]
+   * @returns {Array} the tx list with signed status if no address is provide
+   *  returns all txMetas with signed statuses for the current network
+   */
+  getSignedTransactions(address) {
+    const opts = { status: TRANSACTION_STATUSES.SIGNED }
     if (address) {
       opts.from = address
     }
@@ -439,6 +454,24 @@ export default class TransactionStateManager extends EventEmitter {
     }
     this.updateTx(txMeta, 'transactions:tx-state-manager#fail - add error')
     this._setTxStatus(txId, TRANSACTION_STATUSES.FAILED)
+  }
+
+  /**
+   * Emits the "finished" event for the txId.
+   * Bypasses the normal process of emitting the event only on transaction
+   * submission or rejection.
+   *
+   * @param {number} txId - the txMeta Id
+   */
+  emitTransactionComplete(txId, rawTx) {
+    let txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
+    txHash = addHexPrefix(txHash)
+
+    const txMeta = this.getTx(txId)
+    txMeta.rawTx = rawTx
+    txMeta.hash = txHash
+
+    this.emit(`${txMeta.id}:finished`, txMeta)
   }
 
   /**

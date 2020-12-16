@@ -53,6 +53,8 @@ export default function TransactionListItem({
     displayedStatusKey,
     isPending,
     senderAddress,
+    signOnly,
+    origin,
   } = useTransactionDisplayData(transactionGroup)
 
   const isSignatureReq =
@@ -111,7 +113,7 @@ export default function TransactionListItem({
   ])
 
   const speedUpButton = useMemo(() => {
-    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
+    if (!shouldShowSpeedUp || !isPending || isUnapproved || signOnly) {
       return null
     }
     return (
@@ -143,7 +145,26 @@ export default function TransactionListItem({
               error={err}
               date={date}
               status={displayedStatusKey}
+              signOnly={signOnly}
+              origin={origin}
             />
+<<<<<<< HEAD
+=======
+            {privateTx && (
+              <>
+                <Tooltip
+                  position="top"
+                  title="Private transaction submitted to bloXroute"
+                  wrapperClassName={classnames(
+                    'transaction-status',
+                    'transaction-status--dropped',
+                  )}
+                >
+                  Private
+                </Tooltip>
+              </>
+            )}
+>>>>>>> a7c7e27c8... Sign transactions RPC endpoint
             <span
               className={
                 subtitleContainsOrigin
