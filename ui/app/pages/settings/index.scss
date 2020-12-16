@@ -251,8 +251,7 @@
   }
 
   // bloxroute style for validating header
-  .valid .MuiInputBase-formControl {
-    border-color: green;
-    border-width: 2px;
+  .valid p.Mui-error {
+    color: green;
   }
 }

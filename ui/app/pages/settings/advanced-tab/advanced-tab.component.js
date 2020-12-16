@@ -523,6 +523,8 @@ export default class AdvancedTab extends PureComponent {
     let error
     if (bloxrouteAuthHeader && !authValid) {
       error = bloxrouteAuthHeaderError
+    } else if (authValid) {
+      error = 'Authorization header is valid.'
     } else {
       error = null
     }
