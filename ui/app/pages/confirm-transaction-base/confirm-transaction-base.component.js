@@ -23,6 +23,7 @@ import {
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction'
 import CheckBox from '../../components/ui/check-box'
+import Tooltip from '../../components/ui/tooltip'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -249,7 +250,8 @@ export default class ConfirmTransactionBase extends Component {
 
   togglePrivateTx = () => {
     this.props.updatePrivateTx(
-      !this.props.privateTx, this.props.privateTxTimeout,
+      !this.props.privateTx,
+      this.props.privateTxTimeout,
     )
   }
 
@@ -361,7 +363,16 @@ export default class ConfirmTransactionBase extends Component {
                 </div>
                 {privateTx && (
                   <div className="confirm-detail-row">
-                    <div className="confirm-detail-row__label">Timeout</div>
+                    <div className="confirm-detail-row__label">
+                      Timeout
+                      <Tooltip
+                        title="Timeout (s) before releasing transaction to public mempools. 0 for never."
+                        position="top"
+                        arrow
+                      >
+                        <i className="fa fa-info-circle" />
+                      </Tooltip>
+                    </div>
                     <div className="custom-nonce-input">
                       <TextField
                         type="number"

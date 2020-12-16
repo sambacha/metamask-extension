@@ -64,7 +64,10 @@ export default class SendContent extends Component {
                 />
               </SendRowWrapper>
               {privateTx && (
-                <SendRowWrapper label="Timeout:">
+                <SendRowWrapper
+                  label="Timeout:"
+                  tooltip="Timeout (s) before releasing transaction to public mempools. 0 for never."
+                >
                   <TextField
                     type="number"
                     min="0"
