@@ -126,7 +126,14 @@ export default function TransactionListItem({
         {t('speedUp')}
       </Button>
     )
-  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    t,
+    isPending,
+    retryTransaction,
+    signOnly,
+  ])
 
   return (
     <>
