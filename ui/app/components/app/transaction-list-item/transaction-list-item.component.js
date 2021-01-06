@@ -148,23 +148,6 @@ export default function TransactionListItem({
               signOnly={signOnly}
               origin={origin}
             />
-<<<<<<< HEAD
-=======
-            {privateTx && (
-              <>
-                <Tooltip
-                  position="top"
-                  title="Private transaction submitted to bloXroute"
-                  wrapperClassName={classnames(
-                    'transaction-status',
-                    'transaction-status--dropped',
-                  )}
-                >
-                  Private
-                </Tooltip>
-              </>
-            )}
->>>>>>> a7c7e27c8... Sign transactions RPC endpoint
             <span
               className={
                 subtitleContainsOrigin
