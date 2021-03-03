@@ -434,3 +434,7 @@ export function getSwapsEthToken(state) {
     }),
   };
 }
+
+export function getShowWhatsNewPopup(state) {
+  return state.appState.showWhatsNewPopup;
+}
