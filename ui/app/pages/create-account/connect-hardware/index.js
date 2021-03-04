@@ -2,7 +2,12 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import * as actions from '../../../store/actions';
-import { getMetaMaskAccounts } from '../../../selectors';
+import {
+  getCurrentChainId,
+  getMetaMaskAccounts,
+  getRpcPrefsForCurrentProvider,
+  getSelectedAddress,
+} from '../../../selectors';
 import { formatBalance } from '../../../helpers/utils/util';
 import { getMostRecentOverviewPage } from '../../../ducks/history/history';
 import SelectHardware from './select-hardware';
@@ -245,7 +250,8 @@ class ConnectHardwareForm extends Component {
         accounts={this.state.accounts}
         selectedAccount={this.state.selectedAccount}
         onAccountChange={this.onAccountChange}
-        network={this.props.network}
+        chainId={this.props.chainId}
+        rpcPrefs={this.props.rpcPrefs}
         getPage={this.getPage}
         onUnlockAccount={this.onUnlockAccount}
         onForgetDevice={this.onForgetDevice}
@@ -274,30 +280,22 @@ ConnectHardwareForm.propTypes = {
   unlockHardwareWalletAccount: PropTypes.func,
   setHardwareWalletDefaultHdPath: PropTypes.func,
   history: PropTypes.object,
-  network: PropTypes.string,
+  chainId: PropTypes.string,
+  rpcPrefs: PropTypes.object,
   accounts: PropTypes.object,
   address: PropTypes.string,
   defaultHdPaths: PropTypes.object,
   mostRecentOverviewPage: PropTypes.string.isRequired,
 };
 
-const mapStateToProps = (state) => {
-  const {
-    metamask: { network, selectedAddress },
-  } = state;
-  const accounts = getMetaMaskAccounts(state);
-  const {
-    appState: { defaultHdPaths },
-  } = state;
-
-  return {
-    network,
-    accounts,
-    address: selectedAddress,
-    defaultHdPaths,
-    mostRecentOverviewPage: getMostRecentOverviewPage(state),
-  };
-};
+const mapStateToProps = (state) => ({
+  chainId: getCurrentChainId(state),
+  rpcPrefs: getRpcPrefsForCurrentProvider(state),
+  accounts: getMetaMaskAccounts(state),
+  address: getSelectedAddress(state),
+  defaultHdPaths: state.appState.defaultHdPaths,
+  mostRecentOverviewPage: getMostRecentOverviewPage(state),
+});
 
 const mapDispatchToProps = (dispatch) => {
   return {
