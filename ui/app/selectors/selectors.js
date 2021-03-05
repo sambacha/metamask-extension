@@ -16,6 +16,7 @@ import {
   hexToDecimal,
 } from '../helpers/utils/conversions.util';
 import { ETH_SWAPS_TOKEN_OBJECT } from '../helpers/constants/swaps';
+import { getSwapsFeatureLiveness } from '../ducks/swaps/swaps';
 
 export function getNetworkIdentifier(state) {
   const {
@@ -437,4 +438,26 @@ export function getSwapsEthToken(state) {
 
 export function getShowWhatsNewPopup(state) {
   return state.appState.showWhatsNewPopup;
+}
+
+function getNotificationFilters(state) {
+  const currentNetworkIsMainnet = getIsMainnet(state);
+  const swapsIsEnabled = getSwapsFeatureLiveness(state);
+
+  return {
+    1: !currentNetworkIsMainnet || !swapsIsEnabled,
+  };
+}
+
+export function getSortedNotificationsToShow(state) {
+  const notifications = Object.values(state.metamask.notifications) || [];
+  const notificationFilters = getNotificationFilters(state);
+  const notificationsToShow = notifications.filter(
+    (notification) =>
+      !notification.isShown && !notificationFilters[notification.id],
+  );
+  const notificationsSortedByDate = notificationsToShow.sort(
+    (a, b) => new Date(b.date) - new Date(a.date),
+  );
+  return notificationsSortedByDate;
 }
