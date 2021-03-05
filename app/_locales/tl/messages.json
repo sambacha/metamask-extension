@@ -1116,7 +1116,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "Maaaring magsinungaling ang nakakahamak na Ethereum network providertungkol sa estado ng blockchain at i-record ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
+    "message": "Maaaring magsinungaling ang nakakahamak na network providertungkol sa estado ng blockchain at i-record ang aktibidad ng iyong network. Magdagdag lang ng mga custom na network na pinagkakatiwalaan mo."
   },
   "onlyAvailableOnMainnet": {
     "message": "Available lang sa mainnet"

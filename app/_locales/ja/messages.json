@@ -1128,7 +1128,7 @@
     "description": "Return the user to the site that initiated onboarding"
   },
   "onlyAddTrustedNetworks": {
-    "message": "悪意のあるEthereumネットワークプロバイダは、不正なブロックチェーンによりネットワーク行動を記録することがあります。信頼できるカスタムネットワークのみを追加してください。"
+    "message": "悪意のあるネットワークプロバイダは、不正なブロックチェーンによりネットワーク行動を記録することがあります。信頼できるカスタムネットワークのみを追加してください。"
   },
   "onlyAvailableOnMainnet": {
     "message": "メインネットのみ使用可能です"
