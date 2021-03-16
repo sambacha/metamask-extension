@@ -24,6 +24,7 @@ export default class TransactionListItemDetails extends PureComponent {
   static propTypes = {
     onCancel: PropTypes.func,
     onRetry: PropTypes.func,
+    onMakePublic: PropTypes.func,
     showCancel: PropTypes.bool,
     showSpeedUp: PropTypes.bool,
     showRetry: PropTypes.bool,
@@ -40,6 +41,7 @@ export default class TransactionListItemDetails extends PureComponent {
     tryReverseResolveAddress: PropTypes.func.isRequired,
     senderNickname: PropTypes.string.isRequired,
     recipientNickname: PropTypes.string,
+    privateTx: PropTypes.bool,
   }
 
   state = {
@@ -75,6 +77,12 @@ export default class TransactionListItemDetails extends PureComponent {
   handleRetry = (event) => {
     const { onClose, onRetry } = this.props
     onRetry(event)
+    onClose()
+  }
+
+  handleMakePublic = (event) => {
+    const { onClose, onMakePublic } = this.props
+    onMakePublic(event)
     onClose()
   }
 
@@ -154,6 +162,7 @@ export default class TransactionListItemDetails extends PureComponent {
       title,
       onClose,
       recipientNickname,
+      privateTx,
     } = this.props
     const {
       primaryTransaction: transaction,
@@ -167,13 +176,22 @@ export default class TransactionListItemDetails extends PureComponent {
           <div className="transaction-list-item-details__header">
             <div>{t('details')}</div>
             <div className="transaction-list-item-details__header-buttons">
-              {showSpeedUp && (
+              {showSpeedUp && privateTx && (
                 <Button
                   type="raised"
                   onClick={this.handleRetry}
                   className="transaction-list-item-details__header-button"
                 >
                   {t('speedUp')}
+                </Button>
+              )}
+              {privateTx && (
+                <Button
+                  type="raised"
+                  onClick={this.handleMakePublic}
+                  className="transaction-list-item-details__header-button"
+                >
+                  Make Public
                 </Button>
               )}
               {this.renderCancel()}

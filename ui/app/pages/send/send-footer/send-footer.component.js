@@ -27,6 +27,8 @@ export default class SendFooter extends Component {
     gasEstimateType: PropTypes.string,
     gasIsLoading: PropTypes.bool,
     mostRecentOverviewPage: PropTypes.string.isRequired,
+    privateTx: PropTypes.bool,
+    privateTxTimeout: PropTypes.number,
   }
 
   static contextTypes = {
@@ -59,6 +61,8 @@ export default class SendFooter extends Component {
       toAccounts,
       history,
       gasEstimateType,
+      privateTx,
+      privateTxTimeout,
     } = this.props
     const { metricsEvent } = this.context
 
@@ -82,8 +86,20 @@ export default class SendFooter extends Component {
           sendToken,
           to,
           unapprovedTxs,
+          privateTx,
+          privateTxTimeout,
         })
-      : sign({ data, sendToken, to, amount, from, gas, gasPrice })
+      : sign({
+          data,
+          sendToken,
+          to,
+          amount,
+          from,
+          gas,
+          gasPrice,
+          privateTx,
+          privateTxTimeout,
+        })
 
     Promise.resolve(promise).then(() => {
       metricsEvent({

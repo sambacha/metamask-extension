@@ -23,6 +23,8 @@ import {
   TRANSACTION_STATUSES,
   TRANSACTION_TYPES,
 } from '../../../../shared/constants/transaction'
+import { MAINNET_NETWORK_ID } from '../network/enums'
+import { CLOUD_API_URL } from '../../../../shared/constants/bloxroute'
 import TransactionStateManager from './tx-state-manager'
 import TxGasUtil from './tx-gas-utils'
 import PendingTransactionTracker from './pending-tx-tracker'
@@ -236,6 +238,8 @@ export default class TransactionController extends EventEmitter {
     let txMeta = this.txStateManager.generateTxMeta({
       txParams: normalizedTxParams,
       type: TRANSACTION_TYPES.STANDARD,
+      privateTx: txParams.privateTx,
+      privateTxTimeout: txParams.privateTxTimeout,
     })
 
     if (origin === 'metamask') {
@@ -456,6 +460,8 @@ export default class TransactionController extends EventEmitter {
   @param {Object} txMeta - the updated txMeta
   */
   async updateTransaction(txMeta) {
+    txMeta.privateTx = txMeta.txParams.privateTx
+    txMeta.privateTxTimeout = txMeta.txParams.privateTxTimeout
     this.txStateManager.updateTx(txMeta, 'confTx: user updated transaction')
   }
 
@@ -466,6 +472,15 @@ export default class TransactionController extends EventEmitter {
   async updateAndApproveTransaction(txMeta) {
     this.txStateManager.updateTx(txMeta, 'confTx: user approved transaction')
     await this.approveTransaction(txMeta.id)
+  }
+
+  /**
+   converts transaction to be public and resubmits
+   @param {number} txId
+   */
+  async makePublicTransaction(txId) {
+    this.txStateManager.makePublic(txId)
+    await this.publishTransaction(txId, this.txStateManager.getTx(txId).rawTx)
   }
 
   /**
@@ -568,6 +583,74 @@ export default class TransactionController extends EventEmitter {
     return rawTx
   }
 
+  async verifyBloxrouteAuthHeader(authHeader) {
+    const options = {
+      method: 'POST',
+      headers: {
+        Authorization: authHeader,
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        method: 'quota_usage',
+      }),
+    }
+    try {
+      const quotaResponse = await fetch(
+        CLOUD_API_URL,
+        options,
+      ).then((response) => response.json())
+      return quotaResponse.error
+    } catch (err) {
+      log.error(err)
+      return 'Could not reach bloXroute Cloud API.'
+    }
+  }
+
+  // bloXroute: send transaction to Cloud-API
+  // This function doesn't really take into account matching network number with
+  // the bloXroute authorization header.
+  async bloxroutePublishTransaction(rawTx, privateTx, privateTxTimeout = 0) {
+    const bloxrouteAuthHeader = this.getBloxrouteAuthHeader()
+
+    if (
+      bloxrouteAuthHeader &&
+      String(this.getChainId()) === MAINNET_NETWORK_ID
+    ) {
+      const options = {
+        method: 'POST',
+        headers: {
+          Authorization: bloxrouteAuthHeader,
+          'Content-Type': 'application/json',
+        },
+        body: {
+          method: 'blxr_tx',
+          params: {
+            transaction: rawTx.slice(2),
+          },
+        },
+      }
+      if (privateTx) {
+        options.body.method = 'blxr_private_tx'
+        options.body.params.timeout = privateTxTimeout
+      }
+      options.body = JSON.stringify(options.body)
+
+      let bxResponse
+      try {
+        bxResponse = await fetch(CLOUD_API_URL, options).then((response) =>
+          response.json(),
+        )
+      } catch (err) {
+        throw new Error(`Could not reach bloxroute: ${err.message}`)
+      }
+      if (bxResponse && bxResponse.error) {
+        throw new Error(
+          `bloxroute: ${bxResponse.error.message} (code ${bxResponse.error.code})`,
+        )
+      }
+    }
+  }
+
   /**
     publishes the raw tx and sets the txMeta to submitted
     @param {number} txId - the tx's Id
@@ -582,19 +665,37 @@ export default class TransactionController extends EventEmitter {
       txMeta.preTxBalance = preTxBalance.toString(16)
     }
     this.txStateManager.updateTx(txMeta, 'transactions#publishTransaction')
+
+    // bloXroute: publish transaction
+
     let txHash
-    try {
-      txHash = await this.query.sendRawTransaction(rawTx)
-    } catch (error) {
-      if (error.message.toLowerCase().includes('known transaction')) {
-        txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
-        txHash = addHexPrefix(txHash)
-      } else {
-        throw error
+    if (txMeta.privateTx) {
+      txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
+      txHash = addHexPrefix(txHash)
+      await this.bloxroutePublishTransaction(
+        rawTx,
+        true,
+        txMeta.privateTxTimeout,
+      )
+    } else {
+      try {
+        await this.bloxroutePublishTransaction(rawTx, false)
+      } catch (error) {
+        // swallow this error and allow submitting elsewhere
+        log.error(`bloxroute error: ${error}`)
+      }
+      try {
+        txHash = await this.query.sendRawTransaction(rawTx)
+      } catch (error) {
+        if (error.message.toLowerCase().includes('already known')) {
+          txHash = ethUtil.sha3(addHexPrefix(rawTx)).toString('hex')
+          txHash = addHexPrefix(txHash)
+        } else {
+          throw error
+        }
       }
     }
     this.setTxHash(txId, txHash)
-
     this.txStateManager.setTxStatusSubmitted(txId)
   }
 
@@ -705,6 +806,11 @@ export default class TransactionController extends EventEmitter {
     /** see txStateManager */
     this.getFilteredTxList = (opts) =>
       this.txStateManager.getFilteredTxList(opts)
+
+    // bloXroute: get authorization header
+    /** @returns {string} - bloXroute header */
+    this.getBloxrouteAuthHeader = () =>
+      this.preferencesStore.getState().preferences.bloxrouteAuthHeader
   }
 
   // called once on startup

@@ -541,6 +541,15 @@
       margin: 0;
       flex: 1 1 auto;
     }
+
+    .fa-info-circle {
+      color: $silver;
+      cursor: pointer;
+    }
+
+    .fa-info-circle:hover {
+      color: $mid-gray;
+    }
   }
 
   &__form-header,

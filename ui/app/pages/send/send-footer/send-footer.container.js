@@ -24,6 +24,7 @@ import {
   getGasIsLoading,
   getRenderableEstimateDataForSmallButtonsFromGWEI,
   getDefaultActiveButtonIndex,
+  getSendPrivateTx, getSendPrivateTxTimeout,
 } from '../../../selectors'
 import { getMostRecentOverviewPage } from '../../../ducks/history/history'
 import { addHexPrefix } from '../../../../../app/scripts/lib/util'
@@ -64,13 +65,25 @@ function mapStateToProps(state) {
     gasEstimateType,
     gasIsLoading: getGasIsLoading(state),
     mostRecentOverviewPage: getMostRecentOverviewPage(state),
+    privateTx: getSendPrivateTx(state),
+    privateTxTimeout: getSendPrivateTxTimeout(state),
   }
 }
 
 function mapDispatchToProps(dispatch) {
   return {
     clearSend: () => dispatch(clearSend()),
-    sign: ({ sendToken, to, amount, from, gas, gasPrice, data }) => {
+    sign: ({
+      sendToken,
+      to,
+      amount,
+      from,
+      gas,
+      gasPrice,
+      data,
+      privateTx,
+      privateTxTimeout,
+    }) => {
       const txParams = constructTxParams({
         amount,
         data,
@@ -79,6 +92,8 @@ function mapDispatchToProps(dispatch) {
         gasPrice,
         sendToken,
         to,
+        privateTx,
+        privateTxTimeout,
       })
 
       sendToken
@@ -95,6 +110,8 @@ function mapDispatchToProps(dispatch) {
       sendToken,
       to,
       unapprovedTxs,
+      privateTx,
+      privateTxTimeout,
     }) => {
       const editingTx = constructUpdatedTx({
         amount,
@@ -106,6 +123,8 @@ function mapDispatchToProps(dispatch) {
         sendToken,
         to,
         unapprovedTxs,
+        privateTx,
+        privateTxTimeout,
       })
 
       return dispatch(updateTransaction(editingTx))

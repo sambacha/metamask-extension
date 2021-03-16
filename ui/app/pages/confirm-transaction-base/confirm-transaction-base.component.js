@@ -22,6 +22,8 @@ import {
   TRANSACTION_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../shared/constants/transaction'
+import CheckBox from '../../components/ui/check-box'
+import Tooltip from '../../components/ui/tooltip'
 
 export default class ConfirmTransactionBase extends Component {
   static contextTypes = {
@@ -62,6 +64,10 @@ export default class ConfirmTransactionBase extends Component {
     toNickname: PropTypes.string,
     transactionStatus: PropTypes.string,
     txData: PropTypes.object,
+    privateTx: PropTypes.bool,
+    showPrivateTx: PropTypes.bool,
+    privateTxTimeout: PropTypes.number,
+    updatePrivateTx: PropTypes.func,
     unapprovedTxCount: PropTypes.number,
     currentNetworkUnapprovedTxs: PropTypes.object,
     updateGasAndCalculate: PropTypes.func,
@@ -242,6 +248,17 @@ export default class ConfirmTransactionBase extends Component {
     }
   }
 
+  togglePrivateTx = () => {
+    this.props.updatePrivateTx(
+      !this.props.privateTx,
+      this.props.privateTxTimeout,
+    )
+  }
+
+  setPrivateTxTimeout = (value) => {
+    this.props.updatePrivateTx(this.props.privateTx, value)
+  }
+
   renderDetails() {
     const {
       detailsComponent,
@@ -261,6 +278,9 @@ export default class ConfirmTransactionBase extends Component {
       nextNonce,
       getNextNonce,
       isMainnet,
+      privateTx,
+      showPrivateTx,
+      privateTxTimeout,
     } = this.props
 
     if (hideDetails) {
@@ -307,7 +327,9 @@ export default class ConfirmTransactionBase extends Component {
           </div>
           <div
             className={
-              useNonceField ? 'confirm-page-container-content__gas-fee' : null
+              useNonceField || showPrivateTx
+                ? 'confirm-page-container-content__gas-fee'
+                : null
             }
           >
             <ConfirmDetailRow
@@ -324,6 +346,59 @@ export default class ConfirmTransactionBase extends Component {
               primaryValueTextColor="#2f9ae0"
             />
           </div>
+          {showPrivateTx && (
+            <>
+              <div className="confirm-page-container-content__private-tx">
+                <div className="confirm-detail-row">
+                  <div className="confirm-detail-row__label">Private</div>
+                  <div>
+                    <CheckBox
+                      checked={
+                        typeof privateTx === 'undefined' ? false : privateTx
+                      }
+                      disabled={false}
+                      onClick={this.togglePrivateTx}
+                    />
+                  </div>
+                </div>
+                {privateTx && (
+                  <div className="confirm-detail-row">
+                    <div className="confirm-detail-row__label">
+                      Timeout
+                      <Tooltip
+                        title="Timeout (s) before releasing transaction to public mempools. 0 for never."
+                        position="top"
+                        arrow
+                      >
+                        <i className="fa fa-info-circle" />
+                      </Tooltip>
+                    </div>
+                    <div className="custom-nonce-input">
+                      <TextField
+                        type="number"
+                        min="0"
+                        placeholder={
+                          typeof privateTxTimeout === 'number'
+                            ? privateTxTimeout.toString()
+                            : 0
+                        }
+                        onChange={({ target: { value } }) => {
+                          if (!value.length || Number(value) < 0) {
+                            this.setPrivateTxTimeout(0)
+                          } else {
+                            this.setPrivateTxTimeout(Number(value))
+                          }
+                        }}
+                        fullWidth
+                        margin="dense"
+                        value={privateTxTimeout || 0}
+                      />
+                    </div>
+                  </div>
+                )}
+              </div>
+            </>
+          )}
           {useNonceField ? (
             <div>
               <div className="confirm-detail-row">

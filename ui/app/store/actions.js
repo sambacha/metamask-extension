@@ -24,6 +24,7 @@ import {
 import { switchedToUnconnectedAccount } from '../ducks/alerts/unconnected-account'
 import { getUnconnectedAccountAlertEnabledness } from '../ducks/metamask/metamask'
 import { LISTED_CONTRACT_ADDRESSES } from '../../../shared/constants/tokens'
+import { CLOUD_API_URL } from '../../../shared/constants/bloxroute'
 import * as actionConstants from './actionConstants'
 
 let background = null
@@ -58,6 +59,7 @@ export function tryUnlockMetamask(password) {
       })
     })
       .then(() => {
+        dispatch(checkBloxrouteAuthHeaderValidity(true))
         dispatch(unlockSucceeded())
         return forceUpdateMetamaskState(dispatch)
       })
@@ -739,6 +741,16 @@ export function updateSendAmount(amount) {
   }
 }
 
+export function updateSendPrivateTx(privateTx, privateTxTimeout) {
+  return {
+    type: actionConstants.UPDATE_SEND_PRIVATE_TX,
+    value: {
+      privateTx,
+      privateTxTimeout,
+    },
+  }
+}
+
 export function updateCustomNonce(value) {
   return {
     type: actionConstants.UPDATE_CUSTOM_NONCE,
@@ -892,6 +904,24 @@ export function updateAndApproveTx(txData, dontShowLoadingIndicator) {
         dispatch(hideLoadingIndication())
         return Promise.reject(err)
       })
+  }
+}
+
+export function makePublicTx(txId) {
+  return (dispatch) => {
+    return new Promise((resolve, reject) => {
+      background.makePublicTransaction(txId, (err) => {
+        if (err) {
+          console.log(err)
+          reject(err)
+          return
+        }
+
+        resolve()
+      })
+    })
+      .then(() => updateMetamaskStateFromBackground())
+      .then((newState) => dispatch(updateMetamaskState(newState)))
   }
 }
 
@@ -2173,6 +2203,67 @@ export function setIpfsGateway(val) {
         })
       }
     })
+  }
+}
+
+export function checkBloxrouteAuthHeaderValidity(isStartup = false) {
+  return async (dispatch) => {
+    dispatch(showLoadingIndication())
+
+    // update background state to fetch header
+    let newState
+    try {
+      newState = await promisifiedBackground.getState()
+    } catch (err) {
+      dispatch(hideLoadingIndication())
+      dispatch(displayWarning(err.message))
+      throw err
+    }
+    dispatch(updateMetamaskState(newState))
+    const savedBloxrouteAuthHeader = newState.preferences.bloxrouteAuthHeader
+    if (!savedBloxrouteAuthHeader) {
+      dispatch(clearBloxrouteError())
+      return
+    }
+
+    dispatch(showLoadingIndication())
+    const error = await promisifiedBackground.verifyBloxrouteAuthHeader(
+      savedBloxrouteAuthHeader,
+    )
+    if (error) {
+      dispatch(clearBloxroutePreference())
+      dispatch(updateBloxrouteError(error.data))
+    } else if (!isStartup) {
+      dispatch(updateValidBloxroutePreference())
+    }
+    dispatch(hideLoadingIndication())
+  }
+}
+
+export function updateBloxroutePreference(val) {
+  return setPreference('bloxrouteAuthHeader', val)
+}
+
+export function clearBloxroutePreference() {
+  return updateBloxroutePreference('')
+}
+
+export function updateBloxrouteError(val) {
+  return setPreference('bloxrouteAuthHeaderError', val)
+}
+
+export function clearBloxrouteError() {
+  return updateBloxrouteError('')
+}
+
+export function updateValidBloxroutePreference() {
+  return updateBloxrouteError('ok')
+}
+
+export function setBloxroute(val) {
+  return async (dispatch) => {
+    dispatch(updateBloxroutePreference(val))
+    dispatch(checkBloxrouteAuthHeaderValidity())
   }
 }
 

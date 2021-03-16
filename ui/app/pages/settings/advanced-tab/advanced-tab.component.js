@@ -33,6 +33,9 @@ export default class AdvancedTab extends PureComponent {
     threeBoxDisabled: PropTypes.bool.isRequired,
     setIpfsGateway: PropTypes.func.isRequired,
     ipfsGateway: PropTypes.string.isRequired,
+    setBloxroute: PropTypes.func.isRequired,
+    bloxrouteAuthHeader: PropTypes.string,
+    bloxrouteAuthHeaderError: PropTypes.string,
   }
 
   state = {
@@ -40,6 +43,7 @@ export default class AdvancedTab extends PureComponent {
     lockTimeError: '',
     ipfsGateway: this.props.ipfsGateway,
     ipfsGatewayError: '',
+    bloxrouteAuthHeader: this.props.bloxrouteAuthHeader || '',
   }
 
   renderMobileSync() {
@@ -462,6 +466,82 @@ export default class AdvancedTab extends PureComponent {
     )
   }
 
+  // bloXroute: components
+  handleBloxrouteSave() {
+    const header = this.state.bloxrouteAuthHeader
+    this.props.setBloxroute(header)
+  }
+
+  handleBloxrouteChange(header) {
+    this.setState(() => {
+      const bloxrouteError = ''
+
+      return {
+        bloxrouteAuthHeader: header,
+        bloxrouteError,
+      }
+    })
+  }
+
+  renderBloxrouteControl() {
+    const { t } = this.context
+    return (
+      <div
+        className="settings-page__content-row"
+        data-testid="advanced-setting-bloxroute-auth-header"
+      >
+        <div className="settings-page__content-item">
+          <span>bloXroute</span>
+          <div className="settings-page__content-description">
+            Enter your bloXroute authorization header
+          </div>
+        </div>
+        <div className="settings-page__content-item">
+          <div className="settings-page__content-item-col">
+            {this.renderBloxrouteAuthField()}
+            <Button
+              type="primary"
+              className="settings-tab__rpc-save-button"
+              onClick={() => {
+                this.handleBloxrouteSave()
+              }}
+            >
+              {t('save')}
+            </Button>
+          </div>
+        </div>
+      </div>
+    )
+  }
+
+  renderBloxrouteAuthField() {
+    const { bloxrouteAuthHeaderError } = this.props
+    const { bloxrouteAuthHeader } = this.state
+
+    const authValid = bloxrouteAuthHeaderError === 'ok'
+
+    let error
+    if (bloxrouteAuthHeader && !authValid) {
+      error = bloxrouteAuthHeaderError
+    } else if (authValid) {
+      error = 'Authorization header is valid.'
+    } else {
+      error = null
+    }
+
+    return (
+      <TextField
+        type="text"
+        value={bloxrouteAuthHeader}
+        onChange={(e) => this.handleBloxrouteChange(e.target.value)}
+        error={error}
+        fullWidth
+        margin="dense"
+        className={authValid ? 'valid' : null}
+      />
+    )
+  }
+
   render() {
     const { warning } = this.props
 
@@ -478,6 +558,7 @@ export default class AdvancedTab extends PureComponent {
         {this.renderAutoLockTimeLimit()}
         {this.renderThreeBoxControl()}
         {this.renderIpfsGatewayControl()}
+        {this.renderBloxrouteControl()}
       </div>
     )
   }

@@ -2,10 +2,13 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import PageContainerContent from '../../../components/ui/page-container/page-container-content.component'
 import Dialog from '../../../components/ui/dialog'
+import TextField from '../../../components/ui/text-field'
 import SendAmountRow from './send-amount-row'
 import SendGasRow from './send-gas-row'
 import SendHexDataRow from './send-hex-data-row'
 import SendAssetRow from './send-asset-row'
+import SendRowWrapper from './send-row-wrapper'
+import CheckBox from '../../../components/ui/check-box'
 
 export default class SendContent extends Component {
   static contextTypes = {
@@ -19,12 +22,27 @@ export default class SendContent extends Component {
     contact: PropTypes.object,
     isOwnedAccount: PropTypes.bool,
     warning: PropTypes.string,
+    privateTx: PropTypes.bool,
+    privateTxTimeout: PropTypes.number,
+    updateSendPrivateTx: PropTypes.func,
+    showPrivateTx: PropTypes.bool,
   }
 
   updateGas = (updateData) => this.props.updateGas(updateData)
 
+  togglePrivateTx = () => {
+    this.props.updateSendPrivateTx(
+      !this.props.privateTx,
+      this.props.privateTxTimeout,
+    )
+  }
+
+  setPrivateTxTimeout = (value) => {
+    this.props.updateSendPrivateTx(this.props.privateTx, value)
+  }
+
   render() {
-    const { warning } = this.props
+    const { warning, privateTx, showPrivateTx, privateTxTimeout } = this.props
     return (
       <PageContainerContent>
         <div className="send-v2__form">
@@ -35,6 +53,35 @@ export default class SendContent extends Component {
           <SendGasRow />
           {this.props.showHexData && (
             <SendHexDataRow updateGas={this.updateGas} />
+          )}
+          {showPrivateTx && (
+            <div>
+              <SendRowWrapper label="Private:">
+                <CheckBox
+                  checked={typeof privateTx === 'undefined' ? false : privateTx}
+                  disabled={false}
+                  onClick={this.togglePrivateTx}
+                />
+              </SendRowWrapper>
+              {privateTx && (
+                <SendRowWrapper
+                  label="Timeout:"
+                  tooltip="Timeout (s) before releasing transaction to public mempools. 0 for never."
+                >
+                  <TextField
+                    type="number"
+                    min="0"
+                    placeholder="0"
+                    fullWidth
+                    margin="dense"
+                    value={privateTxTimeout}
+                    onChange={({ target: { value } }) => {
+                      this.setPrivateTxTimeout(Number(value))
+                    }}
+                  />
+                </SendRowWrapper>
+              )}
+            </div>
           )}
         </div>
       </PageContainerContent>

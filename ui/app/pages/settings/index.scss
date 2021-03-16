@@ -249,4 +249,9 @@
       justify-content: flex-end;
     }
   }
+
+  // bloxroute style for validating header
+  .valid p.Mui-error {
+    color: green;
+  }
 }

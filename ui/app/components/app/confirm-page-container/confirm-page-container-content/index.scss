@@ -8,6 +8,15 @@
   display: flex;
   flex-direction: column;
 
+  .fa-info-circle {
+    color: $silver;
+    cursor: pointer;
+  }
+
+  .fa-info-circle:hover {
+    color: $mid-gray;
+  }
+
   &__error-container {
     padding: 0 16px 16px 16px;
   }

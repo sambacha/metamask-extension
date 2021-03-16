@@ -30,6 +30,8 @@ export default function reduceMetamask(state = {}, action) {
       toNickname: '',
       ensResolution: null,
       ensResolutionError: '',
+      privateTx: false,
+      privateTxTimeout: 0,
     },
     useBlockie: false,
     featureFlags: {},
@@ -39,6 +41,8 @@ export default function reduceMetamask(state = {}, action) {
       autoLockTimeLimit: undefined,
       showFiatInTestnets: false,
       useNativeCurrencyAsPrimaryCurrency: true,
+      bloxrouteAuthHeader: undefined,
+      bloxrouteAuthHeaderError: undefined,
     },
     firstTimeFlowType: null,
     completedOnboarding: false,
@@ -180,6 +184,15 @@ export default function reduceMetamask(state = {}, action) {
           amount: action.value,
         },
       }
+    case actionConstants.UPDATE_SEND_PRIVATE_TX:
+      return {
+        ...metamaskState,
+        send: {
+          ...metamaskState.send,
+          privateTx: action.value.privateTx,
+          privateTxTimeout: action.value.privateTxTimeout,
+        },
+      }
 
     case actionConstants.UPDATE_MAX_MODE:
       return {
@@ -265,6 +278,8 @@ export default function reduceMetamask(state = {}, action) {
           maxModeOn: false,
           editingTransactionId: null,
           toNickname: '',
+          privateTx: false,
+          privateTxTimeout: 0,
         },
       }
 

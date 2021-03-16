@@ -14,6 +14,7 @@ const mapStateToProps = (state, ownProps) => {
   const {
     txParams: { gas, gasPrice, value } = {},
     txReceipt: { gasUsed } = {},
+    privateTx,
   } = transaction
   const { showFiatInTestnets } = getPreferences(state)
   const isMainnet = getIsMainnet(state)
@@ -34,6 +35,7 @@ const mapStateToProps = (state, ownProps) => {
     gasPrice,
     gasUsed,
     isTokenApprove,
+    privateTx,
   }
 }
 

@@ -18,6 +18,7 @@ import {
   TRANSACTION_GROUP_CATEGORIES,
   TRANSACTION_STATUSES,
 } from '../../../../../shared/constants/transaction'
+import { useMakePublic } from '../../../hooks/useMakePublic'
 
 export default function TransactionListItem({
   transactionGroup,
@@ -30,12 +31,13 @@ export default function TransactionListItem({
 
   const {
     initialTransaction: { id },
-    primaryTransaction: { err, status },
+    primaryTransaction: { err, status, privateTx },
   } = transactionGroup
   const [cancelEnabled, cancelTransaction] = useCancelTransaction(
     transactionGroup,
   )
   const retryTransaction = useRetryTransaction(transactionGroup)
+  const makePublic = useMakePublic(transactionGroup)
   const shouldShowSpeedUp = useShouldShowSpeedUp(
     transactionGroup,
     isEarliestNonce,
@@ -111,7 +113,7 @@ export default function TransactionListItem({
   ])
 
   const speedUpButton = useMemo(() => {
-    if (!shouldShowSpeedUp || !isPending || isUnapproved) {
+    if (!shouldShowSpeedUp || !isPending || isUnapproved || privateTx) {
       return null
     }
     return (
@@ -124,7 +126,30 @@ export default function TransactionListItem({
         {t('speedUp')}
       </Button>
     )
-  }, [shouldShowSpeedUp, isUnapproved, t, isPending, retryTransaction])
+  }, [
+    shouldShowSpeedUp,
+    isUnapproved,
+    t,
+    isPending,
+    retryTransaction,
+    privateTx,
+  ])
+
+  const makePublicButton = useMemo(() => {
+    if (!privateTx) {
+      return null
+    }
+    return (
+      <Button
+        type="secondary"
+        rounded
+        onClick={makePublic}
+        className="transaction-list-item-details__header-button"
+      >
+        Make Public
+      </Button>
+    )
+  }, [privateTx, makePublic])
 
   return (
     <>
@@ -144,6 +169,20 @@ export default function TransactionListItem({
               date={date}
               status={displayedStatusKey}
             />
+            {privateTx && (
+              <>
+                <Tooltip
+                  position="top"
+                  title="Private"
+                  wrapperClassName={classnames(
+                    'transaction-status',
+                    'transaction-status--dropped',
+                  )}
+                >
+                  Private
+                </Tooltip>
+              </>
+            )}
             <span
               className={
                 subtitleContainsOrigin
@@ -175,6 +214,7 @@ export default function TransactionListItem({
       >
         <div className="transaction-list-item__pending-actions">
           {speedUpButton}
+          {makePublicButton}
           {cancelButton}
         </div>
       </ListItem>
@@ -187,12 +227,14 @@ export default function TransactionListItem({
           senderAddress={senderAddress}
           recipientAddress={recipientAddress}
           onRetry={retryTransaction}
+          onMakePublic={makePublic}
           showRetry={status === TRANSACTION_STATUSES.FAILED && !isSwap}
           showSpeedUp={shouldShowSpeedUp}
           isEarliestNonce={isEarliestNonce}
           onCancel={cancelTransaction}
           showCancel={isPending && !hasCancelled}
           cancelDisabled={!cancelEnabled}
+          privateTx={privateTx}
         />
       )}
     </>

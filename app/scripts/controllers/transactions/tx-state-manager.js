@@ -245,6 +245,19 @@ export default class TransactionStateManager extends EventEmitter {
   }
 
   /**
+   * sets transaction to be public
+   * @param {number} txId
+   */
+  makePublic(txId) {
+    const txList = this.getFullTxList()
+    const index = txList.findIndex((txData) => txData.id === txId)
+    const txMeta = txList[index]
+    txMeta.privateTx = false
+
+    this.updateTx(txMeta, 'Made transaction public')
+  }
+
+  /**
    * merges txParams obj onto txMeta.txParams use extend to ensure
    * that all fields are filled
    * @param {number} txId - the id of the txMeta

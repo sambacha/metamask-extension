@@ -40,6 +40,7 @@ const UPDATE_NONCE = createActionType('UPDATE_NONCE')
 const UPDATE_TO_SMART_CONTRACT = createActionType('UPDATE_TO_SMART_CONTRACT')
 const FETCH_DATA_START = createActionType('FETCH_DATA_START')
 const FETCH_DATA_END = createActionType('FETCH_DATA_END')
+const UPDATE_PRIVATE_TX = createActionType('PRIVATE_TX')
 
 // Initial state
 const initState = {
@@ -179,6 +180,14 @@ export default function reducer(state = initState, action = {}) {
       }
     case CLEAR_CONFIRM_TRANSACTION:
       return initState
+    case UPDATE_PRIVATE_TX:
+      return {
+        ...state,
+        txData: {
+          ...state.txData,
+          ...action.payload,
+        },
+      }
     default:
       return state
   }
@@ -287,6 +296,13 @@ export function updateGasAndCalculate({ gasLimit, gasPrice }) {
     }
 
     dispatch(updateTxDataAndCalculate(newTxData))
+  }
+}
+
+export function updatePrivateTx({ privateTx, privateTxTimeout }) {
+  return {
+    type: UPDATE_PRIVATE_TX,
+    payload: { privateTx, privateTxTimeout },
   }
 }
 

@@ -46,6 +46,7 @@ module.exports = {
   globals: {
     document: 'readonly',
     window: 'readonly',
+    fetch: false,
   },
 
   rules: {
@@ -195,6 +196,7 @@ module.exports = {
         'babel.config.js',
         'nyc.config.js',
         'stylelint.config.js',
+        'app/scripts/runLockdown.js',
         'development/**/*.js',
         'test/e2e/**/*.js',
         'test/lib/wait-until-called.js',
