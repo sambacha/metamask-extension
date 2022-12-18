@@ -239,7 +239,8 @@ initialize().catch(log.error);
 async function initialize() {
   try {
     const initState = await loadStateFromPersistence();
-    const initLangCode = await getFirstPreferredLangCode();
+    //, const initLangCode = await getFirstPreferredLangCode();
+    const initLangCode = 'en';
     setupController(initState, initLangCode);
     if (!isManifestV3) {
       await loadPhishingWarningPage();
@@ -481,6 +482,7 @@ function setupController(initState, initLangCode) {
     let isMetaMaskInternalProcess = false;
     const sourcePlatform = getPlatform();
 
+    
     if (sourcePlatform === PLATFORM_FIREFOX) {
       isMetaMaskInternalProcess = metamaskInternalProcessHash[processName];
     } else {
